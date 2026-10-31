@@ -1,0 +1,110 @@
+# Pages source must be set to "GitHub Actions" once (Settings > Pages).
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  KIVY_REPO: psychowasp/kivy
+  KIVY_REF: wasm-support
+  CARBONKIVY_REPO: CarbonKivy/CarbonKivy
+  PYODIDE_VERSION: 0.29.5
+  PYODIDE_BUILD_VERSION: 0.39.3
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.KIVY_REPO }}
+          ref: ${{ env.KIVY_REF }}
+          path: kivy
+
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.CARBONKIVY_REPO }}
+          path: CarbonKivy
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      - name: Kivy commit
+        id: kivy
+        run: echo "sha=$(git -C kivy rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Kivy's Pyodide wheel
+        id: wheel-cache
+        uses: actions/cache@v6
+        with:
+          path: kivy/dist-wasm
+          key: kivy-pyodide-${{ env.PYODIDE_VERSION }}-${{ steps.kivy.outputs.sha }}
+
+      - name: Toolchain
+        if: steps.wheel-cache.outputs.cache-hit != 'true'
+        run: |
+          uv venv -p 3.13 "$RUNNER_TEMP/venv"
+          VIRTUAL_ENV="$RUNNER_TEMP/venv" uv pip install "pyodide-build==$PYODIDE_BUILD_VERSION" meson ninja
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+
+      - name: Cache Pyodide xbuildenv and emsdk
+        if: steps.wheel-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/pyodide-build
+          key: pyodide-xbuildenv-${{ env.PYODIDE_BUILD_VERSION }}-${{ env.PYODIDE_VERSION }}
+
+      - name: Cache SDL3 and ThorVG for wasm
+        id: deps-cache
+        if: steps.wheel-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v6
+        with:
+          path: kivy/kivy-dependencies/dist
+          key: kivy-wasm-deps-${{ env.PYODIDE_VERSION }}-${{ hashFiles('kivy/tools/build_emscripten_dependencies.sh', 'kivy/tools/build_thorvg.sh', 'kivy/tools/emscripten_sdl_js_exports.c') }}
+
+      - name: Build SDL3 and ThorVG
+        if: steps.wheel-cache.outputs.cache-hit != 'true' && steps.deps-cache.outputs.cache-hit != 'true'
+        working-directory: kivy
+        run: bash tools/build_emscripten_dependencies.sh
+
+      - name: Build Kivy's Pyodide wheel
+        if: steps.wheel-cache.outputs.cache-hit != 'true'
+        working-directory: kivy
+        run: |
+          pyodide xbuildenv install "$PYODIDE_VERSION"
+          [ -f "$(pyodide config get emsdk_dir)/emsdk_env.sh" ] || pyodide xbuildenv install-emscripten
+          bash tools/build_emscripten_wheel.sh
+
+      - name: Build the site
+        env:
+          KIVY: kivy
+          CARBONKIVY: CarbonKivy
+          KIVY_SOURCE: https://github.com/${{ env.KIVY_REPO }}/blob/${{ steps.kivy.outputs.sha }}/examples/
+          CARBONKIVY_SOURCE: https://github.com/${{ env.CARBONKIVY_REPO }}/blob/master/examples/
+        run: sh build.sh
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

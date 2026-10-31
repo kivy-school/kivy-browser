@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kivy</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #111; color: #aab; font: 13px system-ui, sans-serif; }
+  canvas { display: block; outline: none; }
+  #status { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  #error { position: fixed; inset: 0; margin: 0; padding: 16px; overflow: auto; background: #18181c; color: #ff7b72;
+           font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<canvas id="canvas" tabindex="-1" oncontextmenu="event.preventDefault()"></canvas>
+<div id="status">Loading Python…</div>
+<pre id="error" hidden></pre>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.5/full/pyodide.js"></script>
+<script type="module" src="runner.js"></script>
+</body>
+</html>

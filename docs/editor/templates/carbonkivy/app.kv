@@ -1,0 +1,41 @@
+CScreen:
+    CBoxLayout:
+        orientation: "vertical"
+        adaptive: [False, True]
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        padding: [dp(24), dp(24), dp(24), dp(24)]
+        spacing: dp(40)
+
+        CLabel:
+            id: title
+            text: "Hello, Carbon"
+            style: "heading_06"
+            halign: "center"
+            color: app.text_primary
+
+        CTextInputLayout:
+            CTextInput:
+                id: name
+                hint_text: "Your name"
+            CTextInputLabel:
+                text: "Name"
+            CTextInputHelperText:
+                text: "Press Greet"
+
+        CBoxLayout:
+            adaptive: [False, True]
+            spacing: dp(3)
+
+            CButtonPrimary:
+                text: "Greet"
+                icon: "user--profile"
+                role: "Large Productive"
+                size_hint_x: 0.5
+                on_press: app.greet(name.text)
+
+            CButtonSecondary:
+                text: "Theme"
+                icon: "light"
+                role: "Large Productive"
+                size_hint_x: 0.5
+                on_press: app.toggle_theme()

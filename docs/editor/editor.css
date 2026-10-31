@@ -1,0 +1,170 @@
+:root {
+  color-scheme: light dark;
+  --background: #f4f4f6;
+  --pane: #ffffff;
+  --header: #e8e8ec;
+  --text: #222228;
+  --muted: #6a6a74;
+  --border: #d4d4da;
+  --rail: 22px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #16161a;
+    --pane: #1e1e1e;
+    --header: #26262c;
+    --text: #dddde2;
+    --muted: #8c8c96;
+    --border: #33333a;
+  }
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--background);
+  color: var(--text);
+  font: 13px/1.4 system-ui, sans-serif;
+}
+
+.playground {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  height: 100dvh;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.playground:has(.editors.collapsed) {
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+}
+
+.editors {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.panes {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.editors.collapsed .panes,
+.panes .pane.collapsed .editor {
+  display: none;
+}
+
+.panes .pane {
+  flex: 1 1 0;
+}
+
+.panes .pane.collapsed {
+  flex: 0 0 auto;
+}
+
+button, select {
+  margin: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.rail {
+  display: flex;
+  flex: 0 0 var(--rail);
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  background: var(--header);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: var(--muted);
+}
+
+.rail:hover, .pane-toggle:hover {
+  color: var(--text);
+}
+
+.rail-label {
+  writing-mode: vertical-rl;
+  font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+}
+
+.editors:not(.collapsed) .rail-label {
+  visibility: hidden;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--pane);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.pane header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: var(--header);
+  border-bottom: 1px solid var(--border);
+  font: 600 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.panes .pane header {
+  padding: 0;
+}
+
+.pane-toggle {
+  flex: 1;
+  padding: 4px 10px;
+  text-align: left;
+}
+
+.pane-toggle .chevron {
+  display: inline-block;
+  width: 1em;
+  color: var(--muted);
+}
+
+#template {
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-weight: 400;
+}
+
+#status {
+  margin-left: auto;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.editor, #app {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+#app {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: #111;
+}
