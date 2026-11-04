@@ -14,7 +14,8 @@ Kivy and the app all run in the page.
   beside them reloads.
 
 CarbonKivy and KivyMD are installed for every page, so the playground can
-use them too.
+use them too, one at a time (their kv rules clash). Switching the template
+restarts Python.
 
 ## Your own app
 

@@ -16,8 +16,10 @@ KIVYMD_SOURCE=${KIVYMD_SOURCE:-https://github.com/kivymd/KivyMD/blob/master/}
 WASM_INDEX=https://pypi.kivyschool.com/packages
 PYPI=https://files.pythonhosted.org/packages/py3
 
-rm -rf site build/carbonkivy build/kivymd build/md-src
-SOURCE_DATE_EPOCH=315532800 uv build --wheel --out-dir build/carbonkivy "$CARBONKIVY"
+rm -rf site build/carbonkivy build/kivymd build/ck-src build/md-src
+cp -R "$CARBONKIVY" build/ck-src
+patch -s -p1 -d build/ck-src < patches/carbonkivy-kivy3.patch
+SOURCE_DATE_EPOCH=315532800 uv build --wheel --out-dir build/carbonkivy build/ck-src
 
 # kivymd minus materialshapes dep; src path must not contain "kivymd/"
 cp -R "$KIVYMD" build/md-src
@@ -37,7 +39,7 @@ uvx --with mkdocs-material mkdocs build
 python3 tools/pack.py --site site \
     --kivy-examples "$KIVY/examples" --kivy-list kivy_examples.txt --kivy-source "$KIVY_SOURCE" \
     --carbonkivy-examples "$CARBONKIVY/examples" --carbonkivy-source "$CARBONKIVY_SOURCE" \
-    --kivymd-root "$KIVYMD" --kivymd-source "$KIVYMD_SOURCE" \
+    --kivymd-root build/md-src --kivymd-source "$KIVYMD_SOURCE" \
     "$KIVY_WHEEL" build/carbonkivy/carbonkivy-*.whl build/kivymd/*.whl
 du -sh site site/wheels/* | sort -h
 

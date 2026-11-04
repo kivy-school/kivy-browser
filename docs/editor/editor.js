@@ -62,17 +62,27 @@ select.addEventListener("change", async () => {
   editors.py.setValue(py);
   editors.kv.setValue(kv);
   quiet = false;
-  reload();
+  // fresh Python: kivymd and carbonkivy kv rules clash by class name
+  play = null;
+  await new Promise((r) => {
+    frame.addEventListener("load", r, { once: true });
+    frame.contentWindow.location.reload();
+  });
+  start();
 });
 
-status.textContent = "Starting Python…";
-while (!frame.contentWindow?.kivyReady) await new Promise((r) => setTimeout(r, 100));
-try {
-  play = await frame.contentWindow.kivyReady;
-  reload();
-} catch (err) {
-  status.textContent = `Could not start: ${err.message}`;
+async function start() {
+  status.textContent = "Starting Python…";
+  while (!frame.contentWindow?.kivyReady) await new Promise((r) => setTimeout(r, 100));
+  try {
+    play = await frame.contentWindow.kivyReady;
+    busy = again = false;
+    reload();
+  } catch (err) {
+    status.textContent = `Could not start: ${err.message}`;
+  }
 }
+start();
 
 function loadMonaco() {
   return new Promise((resolve, reject) => {

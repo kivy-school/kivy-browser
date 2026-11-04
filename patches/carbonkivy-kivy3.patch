@@ -1,0 +1,28 @@
+diff --git a/carbonkivy/uix/button/button.py b/carbonkivy/uix/button/button.py
+index c7087df..de02e7e 100644
+--- a/carbonkivy/uix/button/button.py
++++ b/carbonkivy/uix/button/button.py
+@@ -191,8 +191,8 @@ class CBaseButton(
+         self.icon_color = self._text_color
+         return super().on_hover(*args)
+ 
+-    def on_state(self, *args) -> None:
+-        if self.state == "down" and self.cstate != "disabled":
++    def on_pressed(self, *args) -> None:
++        if self.pressed and self.cstate != "disabled":
+             self._bg_color = self.active_color
+         else:
+             self._bg_color = (
+diff --git a/carbonkivy/uix/datepicker/datepicker.py b/carbonkivy/uix/datepicker/datepicker.py
+index 7087845..ada586d 100644
+--- a/carbonkivy/uix/datepicker/datepicker.py
++++ b/carbonkivy/uix/datepicker/datepicker.py
+@@ -207,7 +207,7 @@ class CDatePickerDayButton(CButton, SelectableBehavior):
+     def __init__(self, **kwargs) -> None:
+         super(CDatePickerDayButton, self).__init__(**kwargs)
+ 
+-    def on_press(self) -> None:
++    def on_press(self, *args) -> None:
+         if self.disabled:
+             return
+ 

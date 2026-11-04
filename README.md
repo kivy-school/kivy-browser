@@ -4,10 +4,12 @@ Kivy 3.0.0 running as wasm (Pyodide + SDL3 + WebGL2), published to GitHub
 Pages: Kivy's examples, the CarbonKivy and KivyMD examples and a playground.
 
 Kivy comes from [psychowasp/kivy `wasm-support`](https://github.com/psychowasp/kivy/tree/wasm-support),
-CarbonKivy from [CarbonKivy/CarbonKivy](https://github.com/CarbonKivy/CarbonKivy),
+CarbonKivy from [CarbonKivy/CarbonKivy](https://github.com/CarbonKivy/CarbonKivy)
+(with `patches/carbonkivy-kivy3.patch` for Kivy 3's button API),
 KivyMD from [kivymd/KivyMD](https://github.com/kivymd/KivyMD) (wheel built
 without the `materialshapes` dependency and with `patches/kivymd-kivy3.patch`
-for Kivy 3's toggle API; pillow and materialyoucolor wasm wheels from
+for Kivy 3's button/toggle API, applied to the packed examples too; pillow and
+materialyoucolor wasm wheels from
 https://pypi.kivyschool.com/simple). KivyMD examples that need materialshapes
 are left out (`KIVYMD_SHAPES` in `tools/pack.py`).
 `.github/workflows/pages.yml` builds them and deploys the site.

@@ -135,6 +135,7 @@ async def _stop():
     for child in list(Window.children):
         Window.remove_widget(child)
     ToggleButtonBehavior._toggle_groups.clear()
+    Builder.rulectx.clear()  # left over when a kv apply raised
 
     files = {rule[1].ctx.filename for rule in Builder.rules} | set(Builder.files) \
         | {entry.get('filename') for entry in Factory.classes.values()}

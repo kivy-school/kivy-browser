@@ -1,3 +1,136 @@
+diff --git a/examples/button.py b/examples/button.py
+index 7632a5a..84a5f9b 100644
+--- a/examples/button.py
++++ b/examples/button.py
+@@ -345,7 +345,7 @@ class Example(MDApp, CommonApp):
+         )
+         self.root.ids.extended_fab_button_box.add_widget(button)
+ 
+-    def fab_button_expand(self, instance):
++    def fab_button_expand(self, instance, *args):
+         def fab_button_expand(*args):
+             instance.fab_state = (
+                 "expand" if instance.fab_state == "collapse" else "collapse"
+diff --git a/examples/dropdownitem.py b/examples/dropdownitem.py
+index c2230bc..138c9cd 100644
+--- a/examples/dropdownitem.py
++++ b/examples/dropdownitem.py
+@@ -32,7 +32,7 @@ class Example(MDApp, CommonApp):
+         menu_items = [
+             {
+                 "text": f"{i}",
+-                "on_release": lambda x=f"Item {i}": self.menu_callback(x),
++                "on_release": lambda *args, x=f"Item {i}": self.menu_callback(x),
+             }
+             for i in range(5)
+         ]
+diff --git a/examples/ios_button_glass_video.py b/examples/ios_button_glass_video.py
+index 34327e0..cf5bcaa 100644
+--- a/examples/ios_button_glass_video.py
++++ b/examples/ios_button_glass_video.py
+@@ -43,7 +43,7 @@ class VideoPlayerWithIOSButton(MDApp):
+ 
+         return layout
+ 
+-    def toggle_video(self, instance):
++    def toggle_video(self, instance, *args):
+         if self.video.state == "play":
+             self.video.state = "pause"
+             self.root.get_ids().icon.icon = "pause"
+diff --git a/examples/ruler_picker.py b/examples/ruler_picker.py
+index f3949ef..2a4d226 100644
+--- a/examples/ruler_picker.py
++++ b/examples/ruler_picker.py
+@@ -18,7 +18,7 @@ class MainScreen(MDScreen):
+             x="12dp",
+             icon="menu",
+         )
+-        menu.bind(on_release=lambda x: MDApp.get_running_app().open_menu(menu))
++        menu.bind(on_release=lambda *args: MDApp.get_running_app().open_menu(menu))
+ 
+         self.widgets = [
+             MDBoxLayout(
+diff --git a/examples/snackbar.py b/examples/snackbar.py
+index 56b5b9c..e9b75da 100644
+--- a/examples/snackbar.py
++++ b/examples/snackbar.py
+@@ -60,7 +60,7 @@ class Example(MDApp, CommonApp):
+                     MDButtonText(
+                         text=text_button,
+                     ),
+-                    on_release=lambda x, f=function: f(),
++                    on_release=lambda *args, f=function: f(),
+                 )
+             )
+ 
+diff --git a/examples/weel_pickers.py b/examples/weel_pickers.py
+index d86abbe..bdf75d3 100644
+--- a/examples/weel_pickers.py
++++ b/examples/weel_pickers.py
+@@ -75,7 +75,7 @@ class MainScreen(MDScreen):
+             x="12dp",
+             icon="menu",
+         )
+-        menu.bind(on_release=lambda x: MDApp.get_running_app().open_menu(menu))
++        menu.bind(on_release=lambda *args: MDApp.get_running_app().open_menu(menu))
+ 
+         self.widgets = [
+             ContentBox(),
+diff --git a/kivymd/uix/behaviors/state_layer_behavior.py b/kivymd/uix/behaviors/state_layer_behavior.py
+index 83d5972..9549b8f 100644
+--- a/kivymd/uix/behaviors/state_layer_behavior.py
++++ b/kivymd/uix/behaviors/state_layer_behavior.py
+@@ -9,12 +9,19 @@ Behaviors/State Layer
+    `Material Design spec, State layers <https://m3.material.io/foundations/interaction/states/state-layers>`_
+ """
+ 
++import sys
++
+ from kivy import platform
+ from kivy.lang import Builder
+ from kivy.properties import ColorProperty, NumericProperty
+ 
+ from kivymd.uix.behaviors.focus_behavior import StateFocusBehavior
+ 
++
++def _loaded(module, name):
++    # no import: these pull in materialshapes
++    return getattr(sys.modules.get(module), name, ())
++
+ Builder.load_string(
+     """
+ <StateLayerBehavior>
+@@ -228,7 +235,7 @@ class StateLayerBehavior(StateFocusBehavior):
+             MDIconButton,
+         )
+         from kivymd.uix.card import MDCard
+-        from kivymd.uix.list import BaseListItem
++        BaseListItem = _loaded("kivymd.uix.list", "BaseListItem")
+         from kivymd.uix.segmentedbutton import MDSegmentedButtonItem
+         from kivymd.uix.segmentedbutton.segmentedbutton import (
+             MDSegmentButtonSelectedIcon,
+@@ -403,8 +410,10 @@ class StateLayerBehavior(StateFocusBehavior):
+         )
+         from kivymd.uix.card import MDCard
+         from kivymd.uix.chip import MDChip
+-        from kivymd.uix.list import BaseListItem
+-        from kivymd.uix.navigationdrawer import MDNavigationDrawerItem
++        BaseListItem = _loaded("kivymd.uix.list", "BaseListItem")
++        MDNavigationDrawerItem = _loaded(
++            "kivymd.uix.navigationdrawer", "MDNavigationDrawerItem"
++        )
+         from kivymd.uix.segmentedbutton.segmentedbutton import (
+             MDSegmentedButtonContainer,
+         )
+@@ -487,7 +496,7 @@ class StateLayerBehavior(StateFocusBehavior):
+         )
+         from kivymd.uix.card import MDCard
+         from kivymd.uix.chip import MDChip
+-        from kivymd.uix.list import BaseListItem
++        BaseListItem = _loaded("kivymd.uix.list", "BaseListItem")
+         from kivymd.uix.segmentedbutton.segmentedbutton import (
+             MDSegmentedButtonContainer,
+         )
 diff --git a/kivymd/uix/behaviors/toggle_behavior.py b/kivymd/uix/behaviors/toggle_behavior.py
 index 354380a..6f9bf42 100644
 --- a/kivymd/uix/behaviors/toggle_behavior.py
@@ -29,6 +162,18 @@ index 354380a..6f9bf42 100644
          else:
              self.md_bg_color = (
                  self.background_normal
+diff --git a/kivymd/uix/chip/chip.py b/kivymd/uix/chip/chip.py
+index aa5f274..d192c83 100755
+--- a/kivymd/uix/chip/chip.py
++++ b/kivymd/uix/chip/chip.py
+@@ -1800,6 +1800,6 @@ class MDChip(
+             return super().add_widget(widget)
+ 
+     def _set_allow_chip_ripple(
+-        self, instance: MDChipLeadingIcon | MDChipTrailingIcon
++        self, instance: MDChipLeadingIcon | MDChipTrailingIcon, *args
+     ) -> None:
+         self._allow_chip_ripple = not self._allow_chip_ripple
 diff --git a/kivymd/uix/datatables/datatables.kv b/kivymd/uix/datatables/datatables.kv
 index 0da852c..f4c91bf 100644
 --- a/kivymd/uix/datatables/datatables.kv
@@ -43,9 +188,18 @@ index 0da852c..f4c91bf 100644
                  CellHeaderTooltip:
                      id: first_cell
 diff --git a/kivymd/uix/datatables/datatables.py b/kivymd/uix/datatables/datatables.py
-index ee2d0a1..31a1bd9 100644
+index ee2d0a1..459a853 100644
 --- a/kivymd/uix/datatables/datatables.py
 +++ b/kivymd/uix/datatables/datatables.py
+@@ -287,7 +287,7 @@ class CellHeader(BoxLayout, HoverBehavior):
+             btn.size = [dp(24), dp(24)]
+             btn.opacity = 1
+ 
+-    def _sort_release(self, inst):
++    def _sort_release(self, inst, *args):
+         inst.icon = "arrow-down" if inst.icon == "arrow-up" else "arrow-up"
+ 
+         if not self.parent.parent._col_with_sort:
 @@ -331,7 +331,7 @@ class CellHeader(BoxLayout, HoverBehavior):
              self.restore_checks(dict(zip(indices, range(len(indices)))))
              self.table_data.set_next_row_data_parts("reset")
@@ -91,6 +245,15 @@ index ee2d0a1..31a1bd9 100644
  
                  return
  
+@@ -2629,7 +2629,7 @@ class MDDataTable(ThemableBehavior, CommonElevationBehavior, AnchorLayout):
+         menu_items = [
+             {
+                 "text": f"{i}",
+-                "on_release": lambda x=f"{i}": self.table_data.set_number_displayed_lines(
++                "on_release": lambda *args, x=f"{i}": self.table_data.set_number_displayed_lines(
+                     x
+                 ),
+             }
 @@ -2816,7 +2816,7 @@ class CellRow(
      def change_check_state_no_notify(self, new_state: str) -> None:
          checkbox = self.ids.check
@@ -112,6 +275,69 @@ index ee2d0a1..31a1bd9 100644
  
      def _create_widget_from_dict(self, widget_dict, row_index=0, row_data=None):
          """Creates a widget from a dictionary of parameters."""
+@@ -2940,8 +2940,8 @@ class CellRow(
+ 
+         # Bind events.
+         events = {
+-            "on_press": lambda x: widget_dict["on_press"](row_index, row_data),
+-            "on_release": lambda x: widget_dict["on_release"](
++            "on_press": lambda *args: widget_dict["on_press"](row_index, row_data),
++            "on_release": lambda *args: widget_dict["on_release"](
+                 row_index, row_data
+             ),
+             "on_ref_press": lambda x, uid: widget_dict["on_ref_press"](
+diff --git a/kivymd/uix/navigationbar/navigationbar.py b/kivymd/uix/navigationbar/navigationbar.py
+index b8bd0fe..8efd3d6 100644
+--- a/kivymd/uix/navigationbar/navigationbar.py
++++ b/kivymd/uix/navigationbar/navigationbar.py
+@@ -656,7 +656,7 @@ class MDNavigationItem(
+ 
+         Clock.schedule_once(on_active)
+ 
+-    def on_release(self) -> None:
++    def on_release(self, *args) -> None:
+         """Fired when clicking on a panel item."""
+ 
+         self.parent.set_active_item(self)
+diff --git a/kivymd/uix/navigationrail/navigationrail.py b/kivymd/uix/navigationrail/navigationrail.py
+index 113c1ee..56c7202 100644
+--- a/kivymd/uix/navigationrail/navigationrail.py
++++ b/kivymd/uix/navigationrail/navigationrail.py
+@@ -681,7 +681,7 @@ class MDNavigationRail(
+ 
+         return self.ids.box_items.children
+ 
+-    def set_active_item(self, item: MDNavigationRailItem) -> None:
++    def set_active_item(self, item: MDNavigationRailItem, *args) -> None:
+         """Sets the active menu list item."""
+ 
+         for widget in self.ids.box_items.children:
+diff --git a/kivymd/uix/pickers/datepicker/datepicker.py b/kivymd/uix/pickers/datepicker/datepicker.py
+index 4035024..b4a7234 100644
+--- a/kivymd/uix/pickers/datepicker/datepicker.py
++++ b/kivymd/uix/pickers/datepicker/datepicker.py
+@@ -1464,7 +1464,7 @@ class MDDatePickerDaySelectableItem(
+     is_month_end = BooleanProperty(False)
+     is_week_end = BooleanProperty(False)
+ 
+-    def on_release(self):
++    def on_release(self, *args):
+         self.date_picker.set_selected_widget(self)
+ 
+ 
+diff --git a/kivymd/uix/segmentedbutton/segmentedbutton.py b/kivymd/uix/segmentedbutton/segmentedbutton.py
+index d47c84e..3b9ee80 100644
+--- a/kivymd/uix/segmentedbutton/segmentedbutton.py
++++ b/kivymd/uix/segmentedbutton/segmentedbutton.py
+@@ -936,7 +936,7 @@ class MDSegmentedButton(MDBoxLayout):
+             else:
+                 child.radius = _optimal_radius
+ 
+-    def mark_item(self, segment_item: MDSegmentedButtonItem) -> None:
++    def mark_item(self, segment_item: MDSegmentedButtonItem, *args) -> None:
+         """Fired when a segment element is clicked (`on_release` event)."""
+ 
+         if not segment_item.disabled:
 diff --git a/kivymd/uix/selectioncontrol/selectioncontrol.py b/kivymd/uix/selectioncontrol/selectioncontrol.py
 index f080562..f61d69f 100755
 --- a/kivymd/uix/selectioncontrol/selectioncontrol.py
@@ -189,9 +415,18 @@ index f080562..f61d69f 100755
  
  class ThumbIcon(MDIcon):
 diff --git a/kivymd/uix/tab/tab.py b/kivymd/uix/tab/tab.py
-index 43560b1..f50d9a9 100755
+index 43560b1..3a8fa39 100755
 --- a/kivymd/uix/tab/tab.py
 +++ b/kivymd/uix/tab/tab.py
+@@ -1950,7 +1950,7 @@ class MDTabsPrimary(DeclarativeBehavior, ThemableBehavior, BoxLayout):
+             lambda x: self._switch_tab(instance, text, icon), 0.8
+         )
+ 
+-    def set_active_item(self, item: MDTabsItem) -> None:
++    def set_active_item(self, item: MDTabsItem, *args) -> None:
+         """Sets the active tab item."""
+ 
+         for widget in self.ids.container.children:
 @@ -2471,7 +2471,7 @@ class IOSTabBarItem(DeclarativeBehavior, ButtonBehavior, BoxLayout):
              active=self._update_colors,
              active_color=self._update_colors,
@@ -210,3 +445,29 @@ index 43560b1..f50d9a9 100755
  
      def _update_colors(self, *args):
          color = self.active_color if self.active else self.inactive_color
+@@ -2813,7 +2813,7 @@ class IOSBaseTabBar(ThemableBehavior, IOSButtonBehavior, FloatLayout):
+     def _on_anim_complete(self, anim, instance):
+         self._animating = False
+ 
+-    def _on_item_release(self, item):
++    def _on_item_release(self, item, *args):
+         self.select_tab(item)
+ 
+     def _update_spring_physics(self, dt):
+diff --git a/kivymd/uix/tooltip/tooltip.py b/kivymd/uix/tooltip/tooltip.py
+index cad0b9a..e733e30 100644
+--- a/kivymd/uix/tooltip/tooltip.py
++++ b/kivymd/uix/tooltip/tooltip.py
+@@ -475,7 +475,11 @@ class MDTooltip(TouchBehavior):
+     def display_tooltip(self, *args) -> None:
+         """Adds a tooltip widget to the screen and animates its display."""
+ 
+-        if not self._tooltip or self._tooltip.parent or not self._tooltip.text:
++        if (
++            not self._tooltip
++            or self._tooltip.parent
++            or not getattr(self._tooltip, "text", True)  # rich has no text
++        ):
+             return
+ 
+         Window.add_widget(self._tooltip)
