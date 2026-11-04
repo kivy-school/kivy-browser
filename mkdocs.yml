@@ -44,4 +44,5 @@ nav:
   - Home: index.md
   - Examples: examples.md
   - CarbonKivy: carbonkivy.md
+  - KivyMD: kivymd.md
   - Playground: playground.md

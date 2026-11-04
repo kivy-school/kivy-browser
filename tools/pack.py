@@ -9,6 +9,11 @@ from pathlib import Path
 MAX_FILE = 2_000_000
 SKIP_NAMES = {'__pycache__', '.DS_Store', '.git'}
 SKIP_SUFFIXES = {'.c', '.cpp', '.h', '.pyx', '.pxd', '.pxi', '.pyc'}
+KIVYMD_SHAPES = {  # need materialshapes
+    'bottomappbar.py', 'bottomsheet.py', 'carousel.py', 'dialog.py', 'expansionpanel.py',
+    'hero.py', 'imagelist.py', 'ios_buttons.py', 'ios_dialog.py', 'ios_liquid_dropdown.py',
+    'ios_tabs.py', 'ios_textfielld.py', 'list.py', 'loadingindicator.py', 'material_scroll.py',
+    'navigationdrawer.py', 'ripple_m3.py', 'search.py', 'apps/calls/main.py'}
 
 
 def slim_wheel(src, dest_dir):
@@ -89,6 +94,16 @@ def carbonkivy_apps(root):
             if 'carbonkivy.devtools' not in p.read_text()]  # kaki hot reload
 
 
+def kivymd_apps(root):
+    ex = root / 'examples'
+    apps = [{'group': 'ios' if p.stem.startswith('ios_') else 'material', 'title': p.stem,
+             'path': p.relative_to(root).as_posix()}
+            for p in sorted(ex.glob('*.py')) if '.run()' in p.read_text()]
+    apps += [{'group': 'apps', 'title': p.parent.name, 'path': p.relative_to(root).as_posix()}
+             for p in sorted(ex.glob('apps/*/main.py'))]
+    return [a for a in apps if a['path'].removeprefix('examples/') not in KIVYMD_SHAPES]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--site', type=Path, required=True)
@@ -97,6 +112,8 @@ def main():
     ap.add_argument('--kivy-source', required=True)
     ap.add_argument('--carbonkivy-examples', type=Path, required=True)
     ap.add_argument('--carbonkivy-source', required=True)
+    ap.add_argument('--kivymd-root', type=Path, required=True)
+    ap.add_argument('--kivymd-source', required=True)
     ap.add_argument('wheels', type=Path, nargs='+', help='kivy first')
     args = ap.parse_args()
 
@@ -108,6 +125,7 @@ def main():
          args.site, args.kivy_source)
     pack('carbonkivy', args.carbonkivy_examples, carbonkivy_apps(args.carbonkivy_examples),
          args.site, args.carbonkivy_source)
+    pack('kivymd', args.kivymd_root, kivymd_apps(args.kivymd_root), args.site, args.kivymd_source)
 
 
 if __name__ == '__main__':

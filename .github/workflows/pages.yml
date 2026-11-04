@@ -19,6 +19,7 @@ env:
   KIVY_REPO: psychowasp/kivy
   KIVY_REF: wasm-support
   CARBONKIVY_REPO: CarbonKivy/CarbonKivy
+  KIVYMD_REPO: kivymd/KivyMD
   PYODIDE_VERSION: 0.29.5
   PYODIDE_BUILD_VERSION: 0.39.3
 
@@ -39,11 +40,20 @@ jobs:
           repository: ${{ env.CARBONKIVY_REPO }}
           path: CarbonKivy
 
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.KIVYMD_REPO }}
+          path: KivyMD
+
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
 
       - name: Kivy commit
         id: kivy
         run: echo "sha=$(git -C kivy rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: KivyMD commit
+        id: kivymd
+        run: echo "sha=$(git -C KivyMD rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Kivy's Pyodide wheel
         id: wheel-cache
@@ -91,8 +101,10 @@ jobs:
         env:
           KIVY: kivy
           CARBONKIVY: CarbonKivy
+          KIVYMD: KivyMD
           KIVY_SOURCE: https://github.com/${{ env.KIVY_REPO }}/blob/${{ steps.kivy.outputs.sha }}/examples/
           CARBONKIVY_SOURCE: https://github.com/${{ env.CARBONKIVY_REPO }}/blob/master/examples/
+          KIVYMD_SOURCE: https://github.com/${{ env.KIVYMD_REPO }}/blob/${{ steps.kivymd.outputs.sha }}/
         run: sh build.sh
 
       - uses: actions/upload-pages-artifact@v5

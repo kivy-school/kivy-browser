@@ -1,0 +1,48 @@
+MDScreen:
+    md_bg_color: app.theme_cls.backgroundColor
+
+    MDBoxLayout:
+        orientation: "vertical"
+        adaptive_height: True
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        padding: dp(24)
+        spacing: dp(24)
+
+        MDLabel:
+            id: title
+            text: "Hello, KivyMD"
+            font_style: "Headline"
+            role: "medium"
+            halign: "center"
+            adaptive_height: True
+
+        MDTextField:
+            id: name
+
+            MDTextFieldHintText:
+                text: "Your name"
+
+        MDBoxLayout:
+            adaptive_size: True
+            spacing: dp(12)
+            pos_hint: {"center_x": 0.5}
+
+            MDButton:
+                style: "filled"
+                on_release: app.greet(name.text)
+
+                MDButtonIcon:
+                    icon: "account"
+
+                MDButtonText:
+                    text: "Greet"
+
+            MDButton:
+                style: "tonal"
+                on_release: app.theme_cls.switch_theme()
+
+                MDButtonIcon:
+                    icon: "theme-light-dark"
+
+                MDButtonText:
+                    text: "Theme"

@@ -1,0 +1,212 @@
+diff --git a/kivymd/uix/behaviors/toggle_behavior.py b/kivymd/uix/behaviors/toggle_behavior.py
+index 354380a..6f9bf42 100644
+--- a/kivymd/uix/behaviors/toggle_behavior.py
++++ b/kivymd/uix/behaviors/toggle_behavior.py
+@@ -224,7 +224,7 @@ class MDToggleButtonBehavior(ToggleButtonBehavior):
+             }[self.color_map]
+         )
+         self._set_text_and_icon_colors(self.font_color_normal)
+-        self.fbind("state", self._update_colors)
++        self.fbind("activated", self._update_colors)
+ 
+     def _get_color_map(self):
+         """
+@@ -309,7 +309,7 @@ class MDToggleButtonBehavior(ToggleButtonBehavior):
+     def _update_colors(self, instance, value):
+         """Update background and font/icon colors based on button state."""
+ 
+-        if value == "down":
++        if value:
+             self.md_bg_color = (
+                 self.background_down or self.theme_cls.primaryColor
+             )
+@@ -321,8 +321,6 @@ class MDToggleButtonBehavior(ToggleButtonBehavior):
+                 self.icon_color = self.theme_cls.onPrimaryColor
+             if isinstance(self, MDFabButton):
+                 self.icon_color = color
+-            if self.group:
+-                self._release_group(self)
+         else:
+             self.md_bg_color = (
+                 self.background_normal
+diff --git a/kivymd/uix/datatables/datatables.kv b/kivymd/uix/datatables/datatables.kv
+index 0da852c..f4c91bf 100644
+--- a/kivymd/uix/datatables/datatables.kv
++++ b/kivymd/uix/datatables/datatables.kv
+@@ -150,7 +150,7 @@
+                     MDCheckbox:
+                         id: check
+                         pos_hint: {'center_y': .5}
+-                        on_release: root.table_data.select_all(self.state)
++                        on_release: root.table_data.select_all("down" if self.active else "normal")
+ 
+                 CellHeaderTooltip:
+                     id: first_cell
+diff --git a/kivymd/uix/datatables/datatables.py b/kivymd/uix/datatables/datatables.py
+index ee2d0a1..31a1bd9 100644
+--- a/kivymd/uix/datatables/datatables.py
++++ b/kivymd/uix/datatables/datatables.py
+@@ -331,7 +331,7 @@ class CellHeader(BoxLayout, HoverBehavior):
+             self.restore_checks(dict(zip(indices, range(len(indices)))))
+             self.table_data.set_next_row_data_parts("reset")
+             self.table_data.cell_row_obj_dict = {}
+-            self.table_data.table_header.ids.check.state = "normal"
++            self.table_data.table_header.ids.check.active = False
+ 
+ 
+ class CellHeaderTooltipPlain(MDTooltip):
+@@ -757,7 +757,7 @@ class TableData(RecycleView):
+                 if cell_row_obj:
+                     self.cell_row_obj_dict[i] = cell_row_obj
+             if cell_row_obj:
+-                tmp.append(cell_row_obj.ids.check.state == state)
++                tmp.append(cell_row_obj.ids.check.active == (state == "down"))
+ 
+         return all(tmp)
+ 
+@@ -2225,7 +2225,7 @@ class MDDataTable(ThemableBehavior, CommonElevationBehavior, AnchorLayout):
+ 
+         state = "down" if checked else "normal"
+         self.table_data.select_all(state)
+-        self.table_data.table_header.ids.check.state = state
++        self.table_data.table_header.ids.check.active = state == "down"
+ 
+     def toggle_row_checked(self, row_index: int) -> None:
+         """
+@@ -2503,7 +2503,7 @@ class MDDataTable(ThemableBehavior, CommonElevationBehavior, AnchorLayout):
+                 # Clear checkboxes.
+                 self.table_data.checked_row_indices = []
+                 self.table_data.current_selection_check = {}
+-                self.table_data.table_header.ids.check.state = "normal"
++                self.table_data.table_header.ids.check.active = False
+ 
+                 return
+ 
+@@ -2530,7 +2530,7 @@ class MDDataTable(ThemableBehavior, CommonElevationBehavior, AnchorLayout):
+                 self.update_row_data(None, self.row_data)
+                 self.table_data.checked_row_indices = []
+                 self.table_data.current_selection_check = {}
+-                self.table_data.table_header.ids.check.state = "normal"
++                self.table_data.table_header.ids.check.active = False
+ 
+                 return
+ 
+@@ -2816,7 +2816,7 @@ class CellRow(
+     def change_check_state_no_notify(self, new_state: str) -> None:
+         checkbox = self.ids.check
+         checkbox.unbind(active=self.notify_checkbox_click)
+-        checkbox.state = new_state
++        checkbox.active = new_state == "down"
+         checkbox.bind(active=self.notify_checkbox_click)
+ 
+     def select_check(
+@@ -2882,9 +2882,9 @@ class CellRow(
+         """Checks if all checkboxes are in same state."""
+ 
+         if state == "down" and self.table.check_all(state):
+-            self.table.table_header.ids.check.state = "down"
++            self.table.table_header.ids.check.active = True
+         else:
+-            self.table.table_header.ids.check.state = "normal"
++            self.table.table_header.ids.check.active = False
+ 
+     def _create_widget_from_dict(self, widget_dict, row_index=0, row_data=None):
+         """Creates a widget from a dictionary of parameters."""
+diff --git a/kivymd/uix/selectioncontrol/selectioncontrol.py b/kivymd/uix/selectioncontrol/selectioncontrol.py
+index f080562..f61d69f 100755
+--- a/kivymd/uix/selectioncontrol/selectioncontrol.py
++++ b/kivymd/uix/selectioncontrol/selectioncontrol.py
+@@ -981,7 +981,7 @@ class MDCheckbox(
+         change.
+         """
+ 
+-        if self.state == "down":
++        if self.activated:
+             self.icon = (
+                 self.radio_icon_down
+                 if self.group and self.group not in ["root", "child"]
+@@ -999,25 +999,25 @@ class MDCheckbox(
+             )
+ 
+     def set_root_active(self) -> None:
+-        root_checkbox = self.get_widgets("root")
++        root_checkbox = MDCheckbox.get_group("root")
+ 
+         if root_checkbox:
+             MDCheckbox.__allow_root_checkbox_active = False
+             root_checkbox[0].active = True in [
+-                child.active for child in self.get_widgets("child")
++                child.active for child in MDCheckbox.get_group("child")
+             ]
+             MDCheckbox.__allow_root_checkbox_active = True
+ 
+     def set_child_active(self, active: bool):
+-        for child in self.get_widgets("child"):
++        for child in MDCheckbox.get_group("child"):
+             child.active = active
+ 
+         MDCheckbox.__allow_child_checkboxes_active = True
+ 
+-    def on_state(self, *args) -> None:
+-        """Fired when the values of :attr:`state` change."""
++    def on_activated(self, *args) -> None:
++        """Fired when the values of :attr:`activated` change."""
+ 
+-        is_down = self.state == "down"
++        is_down = self.activated
+ 
+         # Without animation.
+         if self.disable_animation:
+@@ -1032,15 +1032,12 @@ class MDCheckbox(
+ 
+         self.update_icon()
+ 
+-        if is_down and self.group:
+-            self._release_group(self)
+-
+         self.active = is_down
+ 
+     def on_active(self, *args) -> None:
+         """Fired when the values of :attr:`active` change."""
+ 
+-        self.state = "down" if self.active else "normal"
++        self.activated = self.active
+ 
+         if (
+             self.group
+@@ -1059,11 +1056,11 @@ class MDCheckbox(
+ 
+         return super().on_touch_down(touch)
+ 
+-    def _release_group(self, current):
++    def _deactivate_group_siblings(self):
+         if self.group and self.group in ["root", "child"]:
+             return
+ 
+-        super()._release_group(current)
++        super()._deactivate_group_siblings()
+ 
+ 
+ class ThumbIcon(MDIcon):
+diff --git a/kivymd/uix/tab/tab.py b/kivymd/uix/tab/tab.py
+index 43560b1..f50d9a9 100755
+--- a/kivymd/uix/tab/tab.py
++++ b/kivymd/uix/tab/tab.py
+@@ -2471,7 +2471,7 @@ class IOSTabBarItem(DeclarativeBehavior, ButtonBehavior, BoxLayout):
+             active=self._update_colors,
+             active_color=self._update_colors,
+             inactive_color=self._update_colors,
+-            state=self._on_state_change,
++            pressed=self._on_state_change,
+         )
+ 
+     def add_widget(self, widget, index=0, canvas=None):
+@@ -2513,7 +2513,7 @@ class IOSTabBarItem(DeclarativeBehavior, ButtonBehavior, BoxLayout):
+                 super().add_widget(Widget(size_hint_y=1))
+ 
+     def _on_state_change(self, instance, value):
+-        self.opacity = 0.6 if value == "down" else 1.0
++        self.opacity = 0.6 if value else 1.0
+ 
+     def _update_colors(self, *args):
+         color = self.active_color if self.active else self.inactive_color

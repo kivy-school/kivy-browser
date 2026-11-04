@@ -66,7 +66,7 @@ async def run(path):
     _ran = True
     folder = os.path.dirname(path)
     os.chdir(folder)
-    sys.path.insert(0, folder)
+    sys.path[:0] = [folder, APP]
     sys.argv = [path]
     try:
         runpy.run_path(path, run_name='__main__')
@@ -102,6 +102,7 @@ async def _stop():
     from kivy.clock import Clock
     from kivy.core.window import Window
     from kivy.factory import Factory
+    from kivy.uix.behaviors import ToggleButtonBehavior
 
     app = App.get_running_app()
     if app:
@@ -118,9 +119,7 @@ async def _stop():
     def ours(cb):
         return getattr(getattr(cb, 'func', cb), '__module__', None) in local
 
-    for anim in list(Animation._instances):
-        for data in list(anim._widgets.values()):
-            anim.cancel(data['widget'])
+    Animation.cancel_all(None)
     for event in Clock.get_events():
         if ours(event.get_callback()):
             event.cancel()
@@ -135,6 +134,7 @@ async def _stop():
                 Window.unbind(**{name: cb})
     for child in list(Window.children):
         Window.remove_widget(child)
+    ToggleButtonBehavior._toggle_groups.clear()
 
     files = {rule[1].ctx.filename for rule in Builder.rules} | set(Builder.files) \
         | {entry.get('filename') for entry in Factory.classes.values()}

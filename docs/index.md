@@ -8,10 +8,13 @@ Kivy and the app all run in the page.
 - [Examples](examples.md): Kivy's own examples, pick one from the tab bar.
 - [CarbonKivy](carbonkivy.md): the [CarbonKivy](https://github.com/CarbonKivy/CarbonKivy)
   examples, IBM's Carbon Design System for Kivy.
+- [KivyMD](kivymd.md): the [KivyMD](https://github.com/kivymd/KivyMD)
+  examples, Material Design for Kivy.
 - [Playground](playground.md): edit `app.kv` and `app.py`, the Kivy app
   beside them reloads.
 
-CarbonKivy is installed for every page, so the playground can use it too.
+CarbonKivy and KivyMD are installed for every page, so the playground can
+use them too.
 
 ## Your own app
 
