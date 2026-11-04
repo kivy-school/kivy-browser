@@ -17,6 +17,7 @@ WASM_INDEX=https://pypi.kivyschool.com/packages
 PYPI=https://files.pythonhosted.org/packages/py3
 
 rm -rf site build/carbonkivy build/kivymd build/ck-src build/md-src
+mkdir -p build
 cp -R "$CARBONKIVY" build/ck-src
 patch -s -p1 -d build/ck-src < patches/carbonkivy-kivy3.patch
 SOURCE_DATE_EPOCH=315532800 uv build --wheel --out-dir build/carbonkivy build/ck-src
