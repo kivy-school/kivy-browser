@@ -1,6 +1,8 @@
-"""The shapes the widgets morph between, by index, as distances (stdlib `sdf`)."""
+"""The shapes the widgets morph between, by index, as distances (stdlib `sdf`),
+and the plate that outlines a widget."""
 from pyshader import *
-from pyshader.stdlib.fragment.sdf import sd_circle, sd_star, sd_heart, sd_hexagon, sd_rounded_box
+from pyshader.stdlib.fragment.sdf import (sd_circle, sd_star, sd_heart, sd_hexagon, sd_rounded_box,
+                                          fill_smooth, stroke_smooth)
 
 COUNT = 5.0
 
@@ -19,3 +21,21 @@ def form(p: float2, index: float) -> float:
 
 def centered(uv: float2, resolution: float2) -> float2:
     return (uv - 0.5) * resolution / min(resolution.x, resolution.y)
+
+
+def within(uv: float2, resolution: float2) -> float2:
+    """`centered`, the shapes shrunk to leave room for the plate."""
+    return centered(uv, resolution) * 1.3
+
+
+def plate(uv: float2, resolution: float2, tint: float4, lit: float) -> float4:
+    """The widget's outline over its whole size, brighter while `lit`."""
+    d = sd_rounded_box((uv - 0.5) * resolution, resolution * 0.5 - 3.0, float4(18.0))
+    fill = fill_smooth(d, 1.0) * (0.1 + 0.14 * lit)
+    line = stroke_smooth(d, 1.5 + 1.5 * lit, 0.75) * (0.75 + 0.25 * lit)
+    return float4(tint.rgb, tint.a * max(fill, line))
+
+
+def over(top: float4, under: float4) -> float4:
+    a = top.a + under.a * (1.0 - top.a)
+    return float4((top.rgb * top.a + under.rgb * under.a * (1.0 - top.a)) / max(a, 0.0001), a)

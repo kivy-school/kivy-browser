@@ -7,13 +7,13 @@ from pyshader import *
 import pyshader.stdlib.fragment.sdf as sdf
 from pyshader.stdlib.fragment.easing import quad_out
 
-from forms import centered, form
+from forms import form, within, plate, over
 
 ECHOES = 3
 
 
 def main(uv: float2, resolution: float2, shape: float, pressed: float, tint: float4) -> float4:
-    p = centered(uv, resolution)
+    p = within(uv, resolution)
     d = form(p, shape)
     k = clamp(pressed, 0.0, 1.0)
     glow = 0.0
@@ -23,4 +23,4 @@ def main(uv: float2, resolution: float2, shape: float, pressed: float, tint: flo
         glow = max(glow, ring * (1.0 - step_k) * (1.0 - float(i) * 0.25))
     body = sdf.fill_smooth(d, 0.004)
     rgb = mix(tint.rgb, float3(1.0), glow * (1.0 - body))
-    return float4(rgb, tint.a * max(body, glow))
+    return over(float4(rgb, tint.a * max(body, glow)), plate(uv, resolution, tint, 1.0 - clamp(pressed, 0.0, 1.0)))
