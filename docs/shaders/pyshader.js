@@ -67,9 +67,16 @@ function put(ex, bytes) {
   return ptr;
 }
 
-export async function compile(source, options) {
+export async function compile(source, options, modules = {}) {
   const ex = await load();
   ex.pyshader_clear_modules();
+  for (const [name, text] of Object.entries(modules)) {
+    const n = encoder.encode(name), t = encoder.encode(text);
+    const np = put(ex, n), tp = put(ex, t);
+    ex.pyshader_add_module(np, n.length, tp, t.length);
+    if (np) ex.pyshader_dealloc(np, n.length);
+    if (tp) ex.pyshader_dealloc(tp, t.length);
+  }
   const src = encoder.encode(source), opt = encoder.encode(options);
   const s = put(ex, src), o = put(ex, opt);
   const failed = ex.pyshader_compile(s, src.length, o, opt.length);

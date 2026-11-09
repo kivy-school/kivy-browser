@@ -6,11 +6,12 @@ requires-python = ">=3.13"
 dependencies = ["kivy>=2.3"]
 
 [build-system]
-requires = ["pyshader"]
+requires = ["pyshader", "pyshader-stdlib"]
 build-backend = "pyshader_builder"
 
 [tool.uv.sources]
 pyshader = { git = "https://github.com/NucleantUI/PyShader", branch = "main" }
+pyshader-stdlib = { git = "https://github.com/NucleantUI/pyshader-stdlib", branch = "master" }
 
 [tool.pyshader.effects-bloom]
 source = "src/kivy_pyshader/effects/bloom.py"
@@ -1055,3 +1056,55 @@ position-matrices = ["projection_mat", "modelview_mat"]
 uv-varying = "tex_coord0"
 target = "compute"
 arguments = ["t:float"]
+
+[tool.pyshader.widgets-gear]
+source = "src/kivy_pyshader/widgets/gear.py"
+output = "src/kivy_pyshader/widgets/gear.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["teeth:float", "last_teeth:float", "pressed:float", "tint:float4"]
+
+[tool.pyshader.widgets-morph]
+source = "src/kivy_pyshader/widgets/morph.py"
+output = "src/kivy_pyshader/widgets/morph.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["shape_from:float", "shape_to:float", "pressed:float", "tint:float4"]
+
+[tool.pyshader.widgets-ripple]
+source = "src/kivy_pyshader/widgets/ripple.py"
+output = "src/kivy_pyshader/widgets/ripple.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["touch:float2", "pressed:float", "tint:float4"]
+
+[tool.pyshader.widgets-toggle]
+source = "src/kivy_pyshader/widgets/toggle.py"
+output = "src/kivy_pyshader/widgets/toggle.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["shape_a:float", "shape_b:float", "morph:float", "tint:float4", "tint_on:float4"]

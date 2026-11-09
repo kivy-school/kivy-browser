@@ -17,7 +17,7 @@ KIVYMD_SHAPES = {  # need materialshapes
     'ios_tabs.py', 'ios_textfielld.py', 'list.py', 'loadingindicator.py', 'material_scroll.py',
     'navigationdrawer.py', 'ripple_m3.py', 'search.py', 'apps/calls/main.py'}
 PYSHADER_GROUPS = (('ShaderTransitions', 'transitions'), ('EffectWidget', 'effects'),
-                   ('RenderContext', 'render'))
+                   ('RenderContext', 'render'), ('Widgets', 'widgets'))
 GLES2_NAMES = ('position-attribute', 'texcoord-attribute', 'color-attribute', 'color-uniform',
                'opacity-uniform', 'uv-varying', 'color-varying', 'content-sampler')
 
@@ -131,6 +131,23 @@ def pyshader_options(section):
     return ' '.join(parts)
 
 
+def pyshader_modules(wheel, stdlib, site):
+    '''The modules the playground's compiler can import: the stdlib and the package's own.'''
+    modules = {}
+    for f in sorted(stdlib.rglob('*.py')):
+        parts = f.relative_to(stdlib).with_suffix('').parts
+        parts = parts[:-1] if parts[-1] == '__init__' else parts
+        if parts[:1] == ('pyshader',) and len(parts) > 1:
+            modules['.'.join(parts)] = f.read_text()
+    with zipfile.ZipFile(wheel) as z:
+        shaders = {n[:-5] for n in z.namelist() if n.endswith('.glsl')}
+        for n in z.namelist():
+            if n.endswith('.py') and n.count('/') == 2 and n[:-3] not in shaders and not n.endswith('__init__.py'):
+                modules[n.rsplit('/', 1)[1][:-3]] = z.read(n).decode()
+    (site / 'apps' / 'pyshader').mkdir(parents=True, exist_ok=True)
+    (site / 'apps' / 'pyshader' / 'modules.json').write_text(json.dumps(modules))
+
+
 def pyshader_apps(wheel, pyproject, site):
     '''An app per shader in the kivy_pyshader wheel; its .py and .glsl copied for the code view.'''
     sections = {s['source']: s for s in tomllib.loads(pyproject.read_text())['tool']['pyshader'].values()
@@ -166,6 +183,7 @@ def main():
     ap.add_argument('--kivymd-source', required=True)
     ap.add_argument('--pyshader-examples', type=Path, required=True)
     ap.add_argument('--pyshader-source', required=True)
+    ap.add_argument('--pyshader-stdlib', type=Path, required=True)
     ap.add_argument('wheels', type=Path, nargs='+', help='kivy first')
     args = ap.parse_args()
 
@@ -182,6 +200,7 @@ def main():
     pack('pyshader', args.pyshader_examples,
          pyshader_apps(wheel, args.pyshader_examples.parent / 'pyproject.toml', args.site),
          args.site, args.pyshader_source)
+    pyshader_modules(wheel, args.pyshader_stdlib, args.site)
 
 
 if __name__ == '__main__':

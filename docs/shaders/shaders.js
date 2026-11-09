@@ -21,6 +21,7 @@ const text = async (url) => {
   return r.text();
 };
 const manifest = text("../apps/pyshader.json").then(JSON.parse);
+const modules = text("../apps/pyshader/modules.json").then(JSON.parse, () => ({}));
 const monaco = await loadMonaco();
 
 const dark = matchMedia("(prefers-color-scheme: dark)");
@@ -131,7 +132,7 @@ async function reload() {
     status.textContent = "Compiling…";
     let glsl;
     try {
-      glsl = await compile(models.py.getValue(), app.options);
+      glsl = await compile(models.py.getValue(), app.options, await modules);
     } catch (err) {
       if (!(err instanceof CompileError)) throw err;
       showProblems([err]);

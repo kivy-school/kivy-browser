@@ -18,7 +18,7 @@ PYSHADER_SOURCE=${PYSHADER_SOURCE:-https://github.com/kivy-school/kivy-browser/b
 WASM_INDEX=https://pypi.kivyschool.com/packages
 PYPI=https://files.pythonhosted.org/packages/py3
 
-rm -rf site build/carbonkivy build/kivymd build/ck-src build/md-src build/pyshader
+rm -rf site build/carbonkivy build/kivymd build/ck-src build/md-src build/pyshader build/pyshader-stdlib
 mkdir -p build
 
 # kivy_pyshader: pyshader_builder compiles pyshader/src/**/*.py to Kivy .glsl
@@ -28,7 +28,8 @@ if [ -z "$PYSHADER_WASM" ]; then
 fi
 PYSHADER_WASM=$(cd "$(dirname "$PYSHADER_WASM")" && pwd)/$(basename "$PYSHADER_WASM")
 PYSHADER_WASM=$PYSHADER_WASM SOURCE_DATE_EPOCH=315532800 \
-    uv build --refresh-package pyshader --wheel --out-dir build/pyshader pyshader
+    uv build --refresh-package pyshader --refresh-package pyshader-stdlib --wheel --out-dir build/pyshader pyshader
+git clone -q --depth 1 https://github.com/NucleantUI/pyshader-stdlib build/pyshader-stdlib
 cp -R "$CARBONKIVY" build/ck-src
 patch -s -p1 -d build/ck-src < patches/carbonkivy-kivy3.patch
 SOURCE_DATE_EPOCH=315532800 uv build --wheel --out-dir build/carbonkivy build/ck-src
@@ -53,6 +54,7 @@ python3 tools/pack.py --site site \
     --carbonkivy-examples "$CARBONKIVY/examples" --carbonkivy-source "$CARBONKIVY_SOURCE" \
     --kivymd-root build/md-src --kivymd-source "$KIVYMD_SOURCE" \
     --pyshader-examples pyshader/examples --pyshader-source "$PYSHADER_SOURCE" \
+    --pyshader-stdlib build/pyshader-stdlib/src \
     "$KIVY_WHEEL" build/carbonkivy/carbonkivy-*.whl build/kivymd/*.whl build/pyshader/kivy_pyshader-*.whl
 mkdir -p site/pyshader
 cp "$PYSHADER_WASM" site/pyshader/pyshader.wasm
