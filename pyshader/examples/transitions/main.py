@@ -31,11 +31,13 @@ Builder.load_string("""
 class Card(Screen):
     color = ColorProperty("white")
 
-    def __init__(self, text, swap=False, **kwargs):
+    def __init__(self, text, swap=False, horizontal=False, **kwargs):
         super().__init__(**kwargs)
-        box = BoxLayout(orientation="vertical", padding="24dp")
+        box = BoxLayout(orientation="horizontal" if horizontal else "vertical", padding="24dp")
         logo = Image(source=LOGO)
-        label = Label(text=text, font_size="48sp", bold=True, size_hint_y=0.4)
+        label = Label(text=text, font_size="48sp", bold=True)
+        if not horizontal:
+            label.size_hint_y = 0.4
         for widget in (label, logo) if swap else (logo, label):
             box.add_widget(widget)
         self.add_widget(box)
@@ -45,7 +47,7 @@ class TransitionsApp(App):
     def build(self):
         sm = ScreenManager(transition=PyShaderTransition(shader=GLSL, duration=1.5))
         for i, color in enumerate(("#d9402f", "#2673d9", "#33a65a")):
-            sm.add_widget(Card(f"Screen {i + 1}", swap=i == 1, name=str(i), color=color))
+            sm.add_widget(Card(f"Screen {i + 1}", swap=i == 1, horizontal=i == 2, name=str(i), color=color))
         Clock.schedule_interval(lambda dt: self.advance(sm), 2.5)
         return sm
 
