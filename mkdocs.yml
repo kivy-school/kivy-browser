@@ -32,6 +32,7 @@ extra_css:
   - stylesheets/extra.css
 extra_javascript:
   - javascripts/apps.js
+  - javascripts/pyshader.js
 
 markdown_extensions:
   - admonition
@@ -45,4 +46,5 @@ nav:
   - Examples: examples.md
   - CarbonKivy: carbonkivy.md
   - KivyMD: kivymd.md
+  - PyShader: pyshader.md
   - Playground: playground.md

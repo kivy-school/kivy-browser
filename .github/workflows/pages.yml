@@ -105,6 +105,7 @@ jobs:
           KIVY_SOURCE: https://github.com/${{ env.KIVY_REPO }}/blob/${{ steps.kivy.outputs.sha }}/examples/
           CARBONKIVY_SOURCE: https://github.com/${{ env.CARBONKIVY_REPO }}/blob/master/examples/
           KIVYMD_SOURCE: https://github.com/${{ env.KIVYMD_REPO }}/blob/${{ steps.kivymd.outputs.sha }}/
+          PYSHADER_SOURCE: https://github.com/${{ github.repository }}/blob/${{ github.sha }}/pyshader/src/kivy_pyshader/
         run: sh build.sh
 
       - uses: actions/upload-pages-artifact@v5

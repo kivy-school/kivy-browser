@@ -1,0 +1,4 @@
+*.glsl
+.venv/
+dist/
+uv.lock

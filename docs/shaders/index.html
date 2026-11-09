@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PyShader for Kivy</title>
+  <link rel="stylesheet" href="../editor/editor.css">
+  <link rel="stylesheet" href="shaders.css">
+</head>
+<body>
+  <main class="playground">
+    <section class="pane code">
+      <header>
+        <nav class="files">
+          <button type="button" data-file="py" aria-selected="true">shader.py</button>
+          <button type="button" data-file="glsl">shader.glsl</button>
+        </nav>
+        <select id="preset" title="Preset" hidden></select>
+        <span id="status"></span>
+      </header>
+      <div class="editor" id="editor"></div>
+      <pre id="problems" hidden></pre>
+    </section>
+    <section class="pane preview">
+      <header>Kivy window</header>
+      <iframe id="app" title="Kivy window" allow="autoplay; clipboard-read; clipboard-write"></iframe>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+  <script type="module" src="shaders.js"></script>
+</body>
+</html>

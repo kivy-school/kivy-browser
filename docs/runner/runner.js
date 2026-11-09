@@ -37,10 +37,10 @@ async function started(runner) {
   say("");
 }
 
-async function runApp(runner, pack, path) {
+async function runApp(runner, pack, id, args) {
   manifests[pack] ??= get(`../apps/${pack}.json`).then((r) => r.json());
-  const app = (await manifests[pack]).apps.find((a) => a.path === path);
-  if (!app) throw new Error(`no app ${path} in ${pack}`);
+  const app = (await manifests[pack]).apps.find((a) => (a.id ?? a.path) === id);
+  if (!app) throw new Error(`no app ${id} in ${pack}`);
   kivyError("");
   say(`Starting ${app.title}…`);
   const zip = `../apps/${pack}/${app.zip}`;
@@ -48,27 +48,36 @@ async function runApp(runner, pack, path) {
     pyodide.unpackArchive(await (await get(zip)).arrayBuffer(), "zip", { extractDir: "/home/pyodide/app" });
     unpacked.add(zip);
   }
-  await runner.run(`/home/pyodide/app/${path}`);
+  await runner.run(`/home/pyodide/app/${app.path}`, pyodide.toPy(args ?? app.args ?? []));
   await started(runner);
 }
 
 let next = null, busy = false;
-globalThis.kivyRun = async (pack, path) => {
-  next = [pack, path];
+globalThis.kivyRun = async (pack, id, args) => {
+  next = [pack, id, args];
   if (busy) return;
   busy = true;
   try {
     const runner = await booted;
     while (next) {
-      const [p, a] = next;
+      const [p, a, g] = next;
       next = null;
-      await runApp(runner, p, a);
+      await runApp(runner, p, a, g);
     }
   } catch (err) {
     kivyError(String(err?.message ?? err));
   } finally {
     busy = false;
   }
+};
+
+// PyShader playground: the compiled .glsl into the package, then the preset's app on it
+globalThis.kivyShader = async (id, glsl) => {
+  const runner = await booted;
+  const [kind, name] = id.split("/");
+  runner.write_shader(kind, "playground", glsl);
+  await kivyRun("pyshader", id, [name, "playground"]);
+  return errorEl.hidden ? "" : errorEl.textContent;
 };
 
 globalThis.kivyReady = booted.then((runner) => {

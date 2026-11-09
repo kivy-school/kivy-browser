@@ -78,3 +78,7 @@ body:has(.kb-full) .md-footer {
 .kb-bar .kb-source {
   margin-left: auto;
 }
+
+.kb-bar[hidden] {
+  display: none;
+}

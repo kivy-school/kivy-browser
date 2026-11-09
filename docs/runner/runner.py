@@ -1,6 +1,7 @@
 import asyncio
 import builtins
 import itertools
+import logging
 import os
 import runpy
 import sys
@@ -12,6 +13,7 @@ import kivy.base
 from kivy.app import App
 from kivy.base import EventLoop, stopTouchApp
 from kivy.lang import Builder
+from kivy.logger import Logger
 
 HOME = '/home/pyodide'
 APP = HOME + '/app'
@@ -21,11 +23,30 @@ task = None
 _ran = False
 _path = list(sys.path)
 _strings = itertools.count()
+_shader_log = []
+
+
+def _error(text):
+    js.kivyError('\n'.join([*_shader_log, text]).strip())
+
+
+class _ShaderLog(logging.Handler):
+    '''Kivy's shader compile and link errors, shown like the app's.'''
+
+    def emit(self, record):
+        msg = record.getMessage()
+        if msg.startswith('Shader: ') and (record.levelno >= logging.ERROR
+                                           or (_shader_log and ': <' in msg)):
+            _shader_log.append(msg)
+            _error('')
+
+
+Logger.addHandler(_ShaderLog())
 
 
 def _report(fut):
     if not fut.cancelled() and fut.exception() is not None:
-        js.kivyError(''.join(traceback.format_exception(fut.exception())))
+        _error(''.join(traceback.format_exception(fut.exception())))
 
 
 def _watch(fut):
@@ -60,23 +81,31 @@ def started():
     return EventLoop.status == 'started'
 
 
-async def run(path):
+def write_shader(kind, name, text):
+    import kivy_pyshader
+    with open(os.path.join(os.path.dirname(kivy_pyshader.__file__), kind, f'{name}.glsl'), 'w') as f:
+        f.write(text)
+
+
+async def run(path, args=()):
     global _ran
     await _stop()
+    _shader_log.clear()
     _ran = True
     folder = os.path.dirname(path)
     os.chdir(folder)
     sys.path[:0] = [folder, APP]
-    sys.argv = [path]
+    sys.argv = [path, *args]
     try:
         runpy.run_path(path, run_name='__main__')
     except BaseException:
-        js.kivyError(traceback.format_exc())
+        _error(traceback.format_exc())
 
 
 async def play(py, kv):
     global _ran
     await _stop()
+    _shader_log.clear()
     _ran = True
     os.makedirs(PLAY, exist_ok=True)
     for name, text in (('app.py', py), ('app.kv', kv)):
@@ -91,7 +120,7 @@ async def play(py, kv):
     try:
         exec(compile(py, module.__file__, 'exec'), module.__dict__)
     except BaseException:
-        js.kivyError(traceback.format_exc())
+        _error(traceback.format_exc())
 
 
 async def _stop():

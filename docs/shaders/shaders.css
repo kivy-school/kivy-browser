@@ -1,0 +1,47 @@
+.files {
+  display: flex;
+  gap: 2px;
+}
+
+.files button {
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--muted);
+}
+
+.files button[aria-selected="true"] {
+  background: var(--pane);
+  color: var(--text);
+}
+
+#preset {
+  max-width: 45%;
+  padding: 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-weight: 400;
+}
+
+#problems {
+  flex: 0 0 auto;
+  max-height: 30%;
+  margin: 0;
+  padding: 8px 10px;
+  overflow: auto;
+  border-top: 1px solid var(--border);
+  background: var(--header);
+  color: #e5534b;
+  font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: pre-wrap;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (orientation: portrait) {
+  .playground {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}

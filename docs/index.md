@@ -10,6 +10,10 @@ Kivy and the app all run in the page.
   examples, IBM's Carbon Design System for Kivy.
 - [KivyMD](kivymd.md): the [KivyMD](https://github.com/kivymd/KivyMD)
   examples, Material Design for Kivy.
+- [PyShader](pyshader.md): shaders written in Python with
+  [PyShader](https://github.com/NucleantUI/PyShader), compiled to OpenGL ES 2
+  for Kivy: ShaderTransitions, EffectWidget effects, RenderContext, and a
+  playground that compiles your PyShader in the page.
 - [Playground](playground.md): edit `app.kv` and `app.py`, the Kivy app
   beside them reloads.
 

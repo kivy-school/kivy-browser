@@ -1,8 +1,10 @@
 """Site data: slim wheels, one zip per app folder, a manifest per pack."""
 import argparse
+import ast
 import hashlib
 import json
 import re
+import tomllib
 import zipfile
 from pathlib import Path
 
@@ -14,6 +16,10 @@ KIVYMD_SHAPES = {  # need materialshapes
     'hero.py', 'imagelist.py', 'ios_buttons.py', 'ios_dialog.py', 'ios_liquid_dropdown.py',
     'ios_tabs.py', 'ios_textfielld.py', 'list.py', 'loadingindicator.py', 'material_scroll.py',
     'navigationdrawer.py', 'ripple_m3.py', 'search.py', 'apps/calls/main.py'}
+PYSHADER_GROUPS = (('ShaderTransitions', 'transitions'), ('EffectWidget', 'effects'),
+                   ('RenderContext', 'render'))
+GLES2_NAMES = ('position-attribute', 'texcoord-attribute', 'color-attribute', 'color-uniform',
+               'opacity-uniform', 'uv-varying', 'color-varying', 'content-sampler')
 
 
 def slim_wheel(src, dest_dir):
@@ -104,6 +110,48 @@ def kivymd_apps(root):
     return [a for a in apps if a['path'].removeprefix('examples/') not in KIVYMD_SHAPES]
 
 
+def pyshader_options(section):
+    '''The compiler options pyshader_builder passes pyshader.wasm for a [tool.pyshader] section.'''
+    s = section
+    parts = [f"target={s.get('target', 'fragment')}", f"format={s.get('format', 'spirv')}"]
+    if s.get('content-top-down'):
+        parts.append('content-top-down=1')
+    elif s.get('content'):
+        parts.append('content=1')
+    if s.get('textures-top-down'):
+        parts.append('textures-top-down=1')
+    parts += [f'arg={a}' for a in s.get('arguments', [])]
+    if s.get('single-file'):
+        parts.append('single-file=1')
+    parts += [f'{k}={s[k]}' for k in GLES2_NAMES if k in s]
+    parts += [f'position-matrix={m}' for m in s.get('position-matrices', [])]
+    parts.append('file=' + s['source'].rsplit('/', 1)[-1])
+    return ' '.join(parts)
+
+
+def pyshader_apps(wheel, pyproject, site):
+    '''An app per shader in the kivy_pyshader wheel; its .py and .glsl copied for the code view.'''
+    sections = {s['source']: s for s in tomllib.loads(pyproject.read_text())['tool']['pyshader'].values()
+                if isinstance(s, dict)}
+    out = site / 'apps' / 'pyshader' / 'src'
+    apps = []
+    with zipfile.ZipFile(wheel) as z:
+        for group, kind in PYSHADER_GROUPS:
+            for name in sorted(n for n in z.namelist()
+                               if n.startswith(f'kivy_pyshader/{kind}/') and n.endswith('.glsl')):
+                stem = name[:-5].rsplit('/', 1)[1]
+                py = z.read(name[:-5] + '.py')
+                for ext, data in (('.py', py), ('.glsl', z.read(name))):
+                    (out / kind).mkdir(parents=True, exist_ok=True)
+                    (out / kind / (stem + ext)).write_bytes(data)
+                doc = ast.get_docstring(ast.parse(py))
+                apps.append({'group': group, 'title': doc.splitlines()[0] if doc else stem,
+                             'id': f'{kind}/{stem}', 'path': f'{kind}/main.py', 'args': [stem],
+                             'shader': f'{kind}/{stem}',
+                             'options': pyshader_options(sections[f'src/kivy_pyshader/{kind}/{stem}.py'])})
+    return apps
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--site', type=Path, required=True)
@@ -114,6 +162,8 @@ def main():
     ap.add_argument('--carbonkivy-source', required=True)
     ap.add_argument('--kivymd-root', type=Path, required=True)
     ap.add_argument('--kivymd-source', required=True)
+    ap.add_argument('--pyshader-examples', type=Path, required=True)
+    ap.add_argument('--pyshader-source', required=True)
     ap.add_argument('wheels', type=Path, nargs='+', help='kivy first')
     args = ap.parse_args()
 
@@ -126,6 +176,10 @@ def main():
     pack('carbonkivy', args.carbonkivy_examples, carbonkivy_apps(args.carbonkivy_examples),
          args.site, args.carbonkivy_source)
     pack('kivymd', args.kivymd_root, kivymd_apps(args.kivymd_root), args.site, args.kivymd_source)
+    wheel = next(w for w in args.wheels if w.name.startswith('kivy_pyshader-'))
+    pack('pyshader', args.pyshader_examples,
+         pyshader_apps(wheel, args.pyshader_examples.parent / 'pyproject.toml', args.site),
+         args.site, args.pyshader_source)
 
 
 if __name__ == '__main__':

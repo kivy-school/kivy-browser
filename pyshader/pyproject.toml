@@ -1,0 +1,1050 @@
+[project]
+name = "kivy-pyshader"
+version = "0.1.0"
+description = "PyShader shaders compiled to OpenGL ES 2 for Kivy"
+requires-python = ">=3.13"
+dependencies = ["kivy>=2.3"]
+
+[build-system]
+requires = ["pyshader"]
+build-backend = "pyshader_builder"
+
+[tool.uv.sources]
+pyshader = { git = "https://github.com/NucleantUI/PyShader", branch = "main" }
+
+[tool.pyshader.effects-bloom]
+source = "src/kivy_pyshader/effects/bloom.py"
+output = "src/kivy_pyshader/effects/bloom.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+
+[tool.pyshader.effects-blur]
+source = "src/kivy_pyshader/effects/blur.py"
+output = "src/kivy_pyshader/effects/blur.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+
+[tool.pyshader.effects-chromatic]
+source = "src/kivy_pyshader/effects/chromatic.py"
+output = "src/kivy_pyshader/effects/chromatic.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+
+[tool.pyshader.effects-crt]
+source = "src/kivy_pyshader/effects/crt.py"
+output = "src/kivy_pyshader/effects/crt.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+
+[tool.pyshader.effects-identity]
+source = "src/kivy_pyshader/effects/identity.py"
+output = "src/kivy_pyshader/effects/identity.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+
+[tool.pyshader.effects-pixelate]
+source = "src/kivy_pyshader/effects/pixelate.py"
+output = "src/kivy_pyshader/effects/pixelate.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+
+[tool.pyshader.effects-ripple]
+source = "src/kivy_pyshader/effects/ripple.py"
+output = "src/kivy_pyshader/effects/ripple.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+
+[tool.pyshader.effects-tint]
+source = "src/kivy_pyshader/effects/tint.py"
+output = "src/kivy_pyshader/effects/tint.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+arguments = ["tint:float4", "strength:float"]
+
+[tool.pyshader.effects-wave]
+source = "src/kivy_pyshader/effects/wave.py"
+output = "src/kivy_pyshader/effects/wave.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+content = true
+content-sampler = "texture0"
+
+[tool.pyshader.render-halfmath]
+source = "src/kivy_pyshader/render/halfmath.py"
+output = "src/kivy_pyshader/render/halfmath.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+color-varying = "frag_color"
+color-uniform = "color"
+opacity-uniform = "opacity"
+
+[tool.pyshader.render-julia]
+source = "src/kivy_pyshader/render/julia.py"
+output = "src/kivy_pyshader/render/julia.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+color-varying = "frag_color"
+color-uniform = "color"
+opacity-uniform = "opacity"
+
+[tool.pyshader.render-lambdas]
+source = "src/kivy_pyshader/render/lambdas.py"
+output = "src/kivy_pyshader/render/lambdas.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+color-varying = "frag_color"
+color-uniform = "color"
+opacity-uniform = "opacity"
+
+[tool.pyshader.render-plasma]
+source = "src/kivy_pyshader/render/plasma.py"
+output = "src/kivy_pyshader/render/plasma.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+color-varying = "frag_color"
+color-uniform = "color"
+opacity-uniform = "opacity"
+
+[tool.pyshader.render-raymarch]
+source = "src/kivy_pyshader/render/raymarch.py"
+output = "src/kivy_pyshader/render/raymarch.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+color-varying = "frag_color"
+color-uniform = "color"
+opacity-uniform = "opacity"
+
+[tool.pyshader.render-rings]
+source = "src/kivy_pyshader/render/rings.py"
+output = "src/kivy_pyshader/render/rings.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+color-varying = "frag_color"
+color-uniform = "color"
+opacity-uniform = "opacity"
+
+[tool.pyshader.render-tunnel]
+source = "src/kivy_pyshader/render/tunnel.py"
+output = "src/kivy_pyshader/render/tunnel.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+color-varying = "frag_color"
+color-uniform = "color"
+opacity-uniform = "opacity"
+
+[tool.pyshader.transitions-angular]
+source = "src/kivy_pyshader/transitions/angular.py"
+output = "src/kivy_pyshader/transitions/angular.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-bounce]
+source = "src/kivy_pyshader/transitions/bounce.py"
+output = "src/kivy_pyshader/transitions/bounce.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-bow-tie-horizontal]
+source = "src/kivy_pyshader/transitions/bow_tie_horizontal.py"
+output = "src/kivy_pyshader/transitions/bow_tie_horizontal.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-bow-tie-vertical]
+source = "src/kivy_pyshader/transitions/bow_tie_vertical.py"
+output = "src/kivy_pyshader/transitions/bow_tie_vertical.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-burn]
+source = "src/kivy_pyshader/transitions/burn.py"
+output = "src/kivy_pyshader/transitions/burn.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-butterfly-wave-scrawler]
+source = "src/kivy_pyshader/transitions/butterfly_wave_scrawler.py"
+output = "src/kivy_pyshader/transitions/butterfly_wave_scrawler.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-cannabis-leaf]
+source = "src/kivy_pyshader/transitions/cannabis_leaf.py"
+output = "src/kivy_pyshader/transitions/cannabis_leaf.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-circle]
+source = "src/kivy_pyshader/transitions/circle.py"
+output = "src/kivy_pyshader/transitions/circle.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-circle-open]
+source = "src/kivy_pyshader/transitions/circle_open.py"
+output = "src/kivy_pyshader/transitions/circle_open.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-color-phase]
+source = "src/kivy_pyshader/transitions/color_phase.py"
+output = "src/kivy_pyshader/transitions/color_phase.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-colour-distance]
+source = "src/kivy_pyshader/transitions/colour_distance.py"
+output = "src/kivy_pyshader/transitions/colour_distance.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-crazy-parametric-fun]
+source = "src/kivy_pyshader/transitions/crazy_parametric_fun.py"
+output = "src/kivy_pyshader/transitions/crazy_parametric_fun.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-cross-hatch]
+source = "src/kivy_pyshader/transitions/cross_hatch.py"
+output = "src/kivy_pyshader/transitions/cross_hatch.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-cross-warp]
+source = "src/kivy_pyshader/transitions/cross_warp.py"
+output = "src/kivy_pyshader/transitions/cross_warp.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-cross-zoom]
+source = "src/kivy_pyshader/transitions/cross_zoom.py"
+output = "src/kivy_pyshader/transitions/cross_zoom.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-cube]
+source = "src/kivy_pyshader/transitions/cube.py"
+output = "src/kivy_pyshader/transitions/cube.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-directional-easing]
+source = "src/kivy_pyshader/transitions/directional_easing.py"
+output = "src/kivy_pyshader/transitions/directional_easing.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-directional-warp]
+source = "src/kivy_pyshader/transitions/directional_warp.py"
+output = "src/kivy_pyshader/transitions/directional_warp.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-directional-wipe]
+source = "src/kivy_pyshader/transitions/directional_wipe.py"
+output = "src/kivy_pyshader/transitions/directional_wipe.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-doom-screen]
+source = "src/kivy_pyshader/transitions/doom_screen.py"
+output = "src/kivy_pyshader/transitions/doom_screen.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-doorway]
+source = "src/kivy_pyshader/transitions/doorway.py"
+output = "src/kivy_pyshader/transitions/doorway.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-dreamy]
+source = "src/kivy_pyshader/transitions/dreamy.py"
+output = "src/kivy_pyshader/transitions/dreamy.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-dreamy-zoom]
+source = "src/kivy_pyshader/transitions/dreamy_zoom.py"
+output = "src/kivy_pyshader/transitions/dreamy_zoom.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-fade]
+source = "src/kivy_pyshader/transitions/fade.py"
+output = "src/kivy_pyshader/transitions/fade.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-fade-color]
+source = "src/kivy_pyshader/transitions/fade_color.py"
+output = "src/kivy_pyshader/transitions/fade_color.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-fade-grayscale]
+source = "src/kivy_pyshader/transitions/fade_grayscale.py"
+output = "src/kivy_pyshader/transitions/fade_grayscale.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-film-burn]
+source = "src/kivy_pyshader/transitions/film_burn.py"
+output = "src/kivy_pyshader/transitions/film_burn.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-fly-eye]
+source = "src/kivy_pyshader/transitions/fly_eye.py"
+output = "src/kivy_pyshader/transitions/fly_eye.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-glitch-displace]
+source = "src/kivy_pyshader/transitions/glitch_displace.py"
+output = "src/kivy_pyshader/transitions/glitch_displace.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-glitch-memories]
+source = "src/kivy_pyshader/transitions/glitch_memories.py"
+output = "src/kivy_pyshader/transitions/glitch_memories.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-grid-flip]
+source = "src/kivy_pyshader/transitions/grid_flip.py"
+output = "src/kivy_pyshader/transitions/grid_flip.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-heart]
+source = "src/kivy_pyshader/transitions/heart.py"
+output = "src/kivy_pyshader/transitions/heart.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-hexagonalize]
+source = "src/kivy_pyshader/transitions/hexagonalize.py"
+output = "src/kivy_pyshader/transitions/hexagonalize.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-kaleidoscope]
+source = "src/kivy_pyshader/transitions/kaleidoscope.py"
+output = "src/kivy_pyshader/transitions/kaleidoscope.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-left-right]
+source = "src/kivy_pyshader/transitions/left_right.py"
+output = "src/kivy_pyshader/transitions/left_right.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-linear-blur]
+source = "src/kivy_pyshader/transitions/linear_blur.py"
+output = "src/kivy_pyshader/transitions/linear_blur.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-luminance-melt]
+source = "src/kivy_pyshader/transitions/luminance_melt.py"
+output = "src/kivy_pyshader/transitions/luminance_melt.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-morph]
+source = "src/kivy_pyshader/transitions/morph.py"
+output = "src/kivy_pyshader/transitions/morph.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-mosaic]
+source = "src/kivy_pyshader/transitions/mosaic.py"
+output = "src/kivy_pyshader/transitions/mosaic.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-multiply-blend]
+source = "src/kivy_pyshader/transitions/multiply_blend.py"
+output = "src/kivy_pyshader/transitions/multiply_blend.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-page-curl]
+source = "src/kivy_pyshader/transitions/page_curl.py"
+output = "src/kivy_pyshader/transitions/page_curl.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-perlin]
+source = "src/kivy_pyshader/transitions/perlin.py"
+output = "src/kivy_pyshader/transitions/perlin.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-pinwheel]
+source = "src/kivy_pyshader/transitions/pinwheel.py"
+output = "src/kivy_pyshader/transitions/pinwheel.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-pixelize]
+source = "src/kivy_pyshader/transitions/pixelize.py"
+output = "src/kivy_pyshader/transitions/pixelize.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-polar-function]
+source = "src/kivy_pyshader/transitions/polar_function.py"
+output = "src/kivy_pyshader/transitions/polar_function.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-polka-dots-curtain]
+source = "src/kivy_pyshader/transitions/polka_dots_curtain.py"
+output = "src/kivy_pyshader/transitions/polka_dots_curtain.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-radial]
+source = "src/kivy_pyshader/transitions/radial.py"
+output = "src/kivy_pyshader/transitions/radial.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-random-noise]
+source = "src/kivy_pyshader/transitions/random_noise.py"
+output = "src/kivy_pyshader/transitions/random_noise.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-random-squares]
+source = "src/kivy_pyshader/transitions/random_squares.py"
+output = "src/kivy_pyshader/transitions/random_squares.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-ripple]
+source = "src/kivy_pyshader/transitions/ripple.py"
+output = "src/kivy_pyshader/transitions/ripple.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-rotate]
+source = "src/kivy_pyshader/transitions/rotate.py"
+output = "src/kivy_pyshader/transitions/rotate.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-rotate-scale-fade]
+source = "src/kivy_pyshader/transitions/rotate_scale_fade.py"
+output = "src/kivy_pyshader/transitions/rotate_scale_fade.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-simple-zoom]
+source = "src/kivy_pyshader/transitions/simple_zoom.py"
+output = "src/kivy_pyshader/transitions/simple_zoom.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-squares-wire]
+source = "src/kivy_pyshader/transitions/squares_wire.py"
+output = "src/kivy_pyshader/transitions/squares_wire.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-squeeze]
+source = "src/kivy_pyshader/transitions/squeeze.py"
+output = "src/kivy_pyshader/transitions/squeeze.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-swap]
+source = "src/kivy_pyshader/transitions/swap.py"
+output = "src/kivy_pyshader/transitions/swap.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-swirl]
+source = "src/kivy_pyshader/transitions/swirl.py"
+output = "src/kivy_pyshader/transitions/swirl.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-tangent-motion-blur]
+source = "src/kivy_pyshader/transitions/tangent_motion_blur.py"
+output = "src/kivy_pyshader/transitions/tangent_motion_blur.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-top-bottom]
+source = "src/kivy_pyshader/transitions/top_bottom.py"
+output = "src/kivy_pyshader/transitions/top_bottom.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-undulating-burn-out]
+source = "src/kivy_pyshader/transitions/undulating_burn_out.py"
+output = "src/kivy_pyshader/transitions/undulating_burn_out.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-water-drop]
+source = "src/kivy_pyshader/transitions/water_drop.py"
+output = "src/kivy_pyshader/transitions/water_drop.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-wind]
+source = "src/kivy_pyshader/transitions/wind.py"
+output = "src/kivy_pyshader/transitions/wind.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-window-blinds]
+source = "src/kivy_pyshader/transitions/window_blinds.py"
+output = "src/kivy_pyshader/transitions/window_blinds.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-window-slice]
+source = "src/kivy_pyshader/transitions/window_slice.py"
+output = "src/kivy_pyshader/transitions/window_slice.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-wipe-down]
+source = "src/kivy_pyshader/transitions/wipe_down.py"
+output = "src/kivy_pyshader/transitions/wipe_down.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-wipe-left]
+source = "src/kivy_pyshader/transitions/wipe_left.py"
+output = "src/kivy_pyshader/transitions/wipe_left.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-wipe-right]
+source = "src/kivy_pyshader/transitions/wipe_right.py"
+output = "src/kivy_pyshader/transitions/wipe_right.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-wipe-up]
+source = "src/kivy_pyshader/transitions/wipe_up.py"
+output = "src/kivy_pyshader/transitions/wipe_up.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
+
+[tool.pyshader.transitions-zoom-in-circles]
+source = "src/kivy_pyshader/transitions/zoom_in_circles.py"
+output = "src/kivy_pyshader/transitions/zoom_in_circles.glsl"
+format = "gles2"
+single-file = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["t:float"]
