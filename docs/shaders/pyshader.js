@@ -18,7 +18,21 @@ function wasi(memory) {
     environ_sizes_get: (c, s) => { view().setUint32(c, 0, true); view().setUint32(s, 0, true); return 0; },
     args_get: () => 0,
     environ_get: () => 0,
+    clock_res_get: (id, out) => { view().setBigUint64(out, 1000n, true); return 0; },
     clock_time_get: (id, p, out) => { view().setBigUint64(out, BigInt(Date.now()) * 1000000n, true); return 0; },
+    fd_prestat_get: () => 8,
+    fd_prestat_dir_name: () => 8,
+    fd_fdstat_get: (fd, out) => {
+      if (fd > 2) return 8;
+      const v = view();
+      v.setUint8(out, 2);
+      v.setUint16(out + 2, 0, true);
+      v.setBigUint64(out + 8, 0n, true);
+      v.setBigUint64(out + 16, 0n, true);
+      return 0;
+    },
+    fd_close: () => 0,
+    sched_yield: () => 0,
     fd_write: (fd, iovs, n, written) => {
       const v = view();
       let total = 0;
