@@ -27,9 +27,8 @@ runs it in the page.
 
 ## Local build
 
-    # in the kivy checkout
-    tools/build_emscripten_dependencies.sh
-    tools/build_emscripten_wheel.sh
+    # in the kivy checkout: SDL3 + ThorVG (before-all) and the wheel
+    PYODIDE_VERSION=0.29.5 cibuildwheel --only cp313-pyodide_wasm32 --output-dir dist-wasm
 
     # here
     KIVY=../kivy CARBONKIVY=../CarbonKivy KIVYMD=../KivyMD ./build.sh serve

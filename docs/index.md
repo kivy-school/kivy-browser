@@ -40,4 +40,4 @@ HelloApp().run()
 Pyodide's event loop and returns.
 
 Kivy sources: [psychowasp/kivy, `wasm-support`](https://github.com/psychowasp/kivy/tree/wasm-support)
-(`tools/build_emscripten_dependencies.sh`, `tools/build_emscripten_wheel.sh`).
+(`cibuildwheel --platform pyodide`: SDL3 and ThorVG are its `before-all`).
