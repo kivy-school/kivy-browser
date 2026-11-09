@@ -9,17 +9,25 @@
 </head>
 <body>
   <main class="playground">
-    <section class="pane code">
-      <header>
-        <nav class="files">
-          <button type="button" data-file="py" aria-selected="true">shader.py</button>
-          <button type="button" data-file="glsl">shader.glsl</button>
-        </nav>
-        <select id="preset" title="Preset" hidden></select>
-        <span id="status"></span>
-      </header>
-      <div class="editor" id="editor"></div>
-      <pre id="problems" hidden></pre>
+    <section class="editors">
+      <div class="panes">
+        <div class="pane code">
+          <header>
+            <nav class="files">
+              <button type="button" data-file="py" aria-selected="true">shader.py</button>
+              <button type="button" data-file="glsl">shader.glsl</button>
+            </nav>
+            <select id="preset" title="Preset" hidden></select>
+            <span id="status"></span>
+          </header>
+          <div class="editor" id="editor"></div>
+          <pre id="problems" hidden></pre>
+        </div>
+      </div>
+      <button class="rail" id="rail" type="button" title="Hide the code">
+        <span class="chevron">‹</span>
+        <span class="rail-label">shader.py</span>
+      </button>
     </section>
     <section class="pane preview">
       <header>Kivy window</header>

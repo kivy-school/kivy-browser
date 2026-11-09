@@ -10,7 +10,10 @@ const frame = document.getElementById("app");
 const preset = document.getElementById("preset");
 const problems = document.getElementById("problems");
 const tabs = [...document.querySelectorAll(".files button")];
+const rail = document.getElementById("rail");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+fold();
 
 const text = async (url) => {
   const r = await fetch(url, { cache: "no-cache" });
@@ -48,6 +51,7 @@ async function load(app) {
   const name = app.shader.split("/")[1];
   tabs[0].textContent = `${name}.py`;
   tabs[1].textContent = `${name}.glsl`;
+  rail.querySelector(".rail-label").textContent = `${name}.py`;
   showProblems([]);
   showFile("py");
 }
@@ -149,6 +153,25 @@ async function reload() {
     busy = false;
     if (again) { again = false; reload(); }
   }
+}
+
+function fold() {
+  const FOLD = "kb-pyshader-folded";
+  let folded = null;
+  try { folded = JSON.parse(localStorage.getItem(FOLD)); } catch {}
+  folded ??= matchMedia("(orientation: portrait)").matches;
+  const editors = document.querySelector(".editors");
+  const show = () => {
+    editors.classList.toggle("collapsed", folded);
+    rail.title = folded ? "Show the code" : "Hide the code";
+    rail.querySelector(".chevron").textContent = folded ? "›" : "‹";
+  };
+  rail.addEventListener("click", () => {
+    folded = !folded;
+    show();
+    try { localStorage.setItem(FOLD, JSON.stringify(folded)); } catch {}
+  });
+  show();
 }
 
 function loadMonaco() {

@@ -35,13 +35,10 @@
   white-space: pre-wrap;
 }
 
-[hidden] {
-  display: none !important;
+.panes .pane.code header {
+  padding: 4px 10px;
 }
 
-@media (orientation: portrait) {
-  .playground {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-  }
+[hidden] {
+  display: none !important;
 }
