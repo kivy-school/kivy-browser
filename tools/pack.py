@@ -124,6 +124,8 @@ def pyshader_options(section):
     if s.get('single-file'):
         parts.append('single-file=1')
     parts += [f'{k}={s[k]}' for k in GLES2_NAMES if k in s]
+    if s.get('uv-top-down'):
+        parts.append('uv-top-down=1')
     parts += [f'position-matrix={m}' for m in s.get('position-matrices', [])]
     parts.append('file=' + s['source'].rsplit('/', 1)[-1])
     return ' '.join(parts)
