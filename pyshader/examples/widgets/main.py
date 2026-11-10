@@ -7,8 +7,9 @@ from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 
-from kivy_pyshader.buttons import (CombineToggle, GearButton, MergeToggle, MorphButton, MorphToggle,
-                                   OnionButton, RippleButton, SwitchToggle)
+from kivy_pyshader.buttons import (CombineToggle, GearButton, GlintButton, LedButton, LiftToggle, MergeToggle,
+                                   MorphButton, MorphToggle, NeonButton, NeonToggle, OnionButton, PowerToggle,
+                                   RippleButton, SwitchToggle)
 
 SHADER = sys.argv[1] if len(sys.argv) > 1 else "gear"
 GLSL = sys.argv[2] if len(sys.argv) > 2 else SHADER
@@ -71,6 +72,21 @@ def widgets():
             SwitchToggle(shader=shader, tint=TINTS[0]),
             SwitchToggle(shader=shader, tint=TINTS[1], tint_on=TINTS[2]),
             SwitchToggle(shader=shader, tint=TINTS[0], glow=1.0)]
+    if SHADER == "neon":
+        return "Top: toggle the sign on and off. Bottom: press, it surges", [
+            NeonToggle(shader=shader, tint=TINTS[1], shape=2), NeonToggle(shader=shader, tint=TINTS[0], shape=1),
+            NeonButton(shader=shader, tint=TINTS[2], shape=0), NeonButton(shader=shader, tint="#b06fe0", shape=3)]
+    if SHADER == "leds":
+        return "Press: a light runs once round the ring", [
+            LedButton(shader=shader, tint=t, count=n) for t, n in zip(TINTS, (12, 16, 24))]
+    if SHADER == "power":
+        return "Toggle: the light runs round, the sign lights", [PowerToggle(shader=shader, tint=t) for t in TINTS]
+    if SHADER == "glint":
+        return "Press: pushed in, a glint sweeps across", [
+            GlintButton(shader=shader, tint=t, shape=n) for t, n in zip(TINTS, (4, 0, 2))]
+    if SHADER == "lift":
+        return "Toggle: lifted off the surface, set back down", [
+            LiftToggle(shader=shader, tint=t, shape=n) for t, n in zip(TINTS, (4, 1, 2))]
     return "Toggle: A to B, B to A", [
         MorphToggle(shader=shader, tint=t, shape_a=a, shape_b=b) for t, (a, b) in zip(TINTS, ((4, 1), (0, 2), (3, 0)))]
 
@@ -80,7 +96,7 @@ class WidgetsApp(App):
         demo = Demo()
         demo.ids.title.text, children = widgets()
         grid = demo.ids.grid
-        if SHADER == "combine":
+        if SHADER in ("combine", "neon"):
             grid.cols = 2
         if SHADER in ("ripple", "switch"):
             grid.row_force_default = True

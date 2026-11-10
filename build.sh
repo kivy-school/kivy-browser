@@ -4,7 +4,7 @@
 #   KIVY_WHEEL  its Pyodide wheel, default $KIVY/dist-wasm/kivy-*.whl
 #   CARBONKIVY  CarbonKivy checkout, default ../CarbonKivy
 #   KIVYMD      KivyMD checkout, default ../KivyMD
-#   PYSHADER_WASM  pyshader.wasm, default: the one PyShader's docs site deploys
+#   PYSHADER_WASM  pyshader.wasm, default: the one in the PyShader release pyshader/pyproject.toml pins
 set -e
 cd "$(dirname "$0")"
 KIVY=${KIVY:-../kivy}
@@ -23,8 +23,11 @@ mkdir -p build
 
 # kivy_pyshader: pyshader_builder compiles pyshader/src/**/*.py to Kivy .glsl
 if [ -z "$PYSHADER_WASM" ]; then
+    PYSHADER_TAG=$(sed -n 's/^pyshader = .*tag = "\([^"]*\)".*/\1/p' pyshader/pyproject.toml)
+    curl -sSfL -o build/pyshader.whl \
+        "https://github.com/NucleantUI/PyShader/releases/download/$PYSHADER_TAG/pyshader-$PYSHADER_TAG-py3-none-any.whl"
     PYSHADER_WASM=build/pyshader.wasm
-    curl -sSfL -o "$PYSHADER_WASM" https://nucleantui.github.io/PyShader/assets/pyshader/pyshader.wasm
+    unzip -p build/pyshader.whl pyshader_builder/pyshader.wasm > "$PYSHADER_WASM"
 fi
 PYSHADER_WASM=$(cd "$(dirname "$PYSHADER_WASM")" && pwd)/$(basename "$PYSHADER_WASM")
 PYSHADER_WASM=$PYSHADER_WASM SOURCE_DATE_EPOCH=315532800 \

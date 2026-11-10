@@ -1,4 +1,5 @@
 from kivy.animation import Animation
+from kivy.clock import Clock
 from kivy.graphics import Rectangle, RenderContext
 from kivy.properties import AliasProperty, BoundedNumericProperty, ColorProperty, ListProperty, NumericProperty, StringProperty
 from kivy.uix.behaviors import ButtonBehavior, ToggleButtonBehavior
@@ -7,7 +8,8 @@ from kivy.uix.widget import Widget
 from . import glsl
 
 __all__ = ("ShaderWidget", "ShaderToggle", "GearButton", "MorphButton", "RippleButton", "CombineToggle",
-           "OnionButton", "MorphToggle", "MergeToggle", "SwitchToggle")
+           "OnionButton", "MorphToggle", "MergeToggle", "SwitchToggle", "NeonToggle", "NeonButton",
+           "LedButton", "PowerToggle", "GlintButton", "LiftToggle")
 
 SHAPES = 5  # circle, star, heart, hexagon, rounded square (widgets/forms.py)
 
@@ -129,6 +131,7 @@ class ShaderToggle(ToggleButtonBehavior, ShaderWidget):
     """Animates `morph` to 1 when down, back to 0 when up."""
 
     morph = NumericProperty(0.0)
+    duration = 0.45
 
     uniforms = {**ShaderWidget.uniforms, "morph": "morph"}
 
@@ -140,7 +143,7 @@ class ShaderToggle(ToggleButtonBehavior, ShaderWidget):
 
     def _morph_to(self, down):
         Animation.cancel_all(self, "morph")
-        Animation(morph=1.0 if down else 0.0, d=0.45).start(self)
+        Animation(morph=1.0 if down else 0.0, d=self.duration).start(self)
 
 
 class MorphToggle(ShaderToggle):
@@ -191,3 +194,79 @@ class OnionButton(ButtonBehavior, ShaderWidget):
 
     def on_press(self, *args):
         self.play(0.9)
+
+
+class Flicker:
+    """Sends `time` every frame, for a shader that moves on its own."""
+
+    time = NumericProperty(0.0)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Clock.schedule_interval(self._tick, 0)
+
+    def _tick(self, dt):
+        self.time += dt
+
+
+class NeonToggle(Flicker, ShaderToggle):
+    """A neon sign that stutters on when down and off when up."""
+
+    shader = StringProperty("widgets/neon")
+    shape = BoundedNumericProperty(2, min=0, max=SHAPES - 1)
+    duration = 0.8
+
+    uniforms = {**ShaderToggle.uniforms, "shape": "shape", "time": "time"}
+
+
+class NeonButton(Flicker, ButtonBehavior, ShaderWidget):
+    """A lit neon sign that surges on every press."""
+
+    shader = StringProperty("widgets/neon")
+    shape = BoundedNumericProperty(2, min=0, max=SHAPES - 1)
+    morph = NumericProperty(1.0)
+
+    uniforms = {**ShaderWidget.uniforms, "shape": "shape", "time": "time", "morph": "morph"}
+
+    def on_press(self, *args):
+        self.play(0.6)
+
+
+class LedButton(ButtonBehavior, ShaderWidget):
+    """A ring of `count` LEDs; every press runs a light once round it."""
+
+    shader = StringProperty("widgets/leds")
+    count = NumericProperty(16)
+
+    uniforms = {**ShaderWidget.uniforms, "count": "count"}
+
+    def on_press(self, *args):
+        self.play(1.2)
+
+
+class PowerToggle(ShaderToggle):
+    """A power sign and ring that light up when down."""
+
+    shader = StringProperty("widgets/power")
+    duration = 0.7
+
+
+class GlintButton(ButtonBehavior, ShaderWidget):
+    """A bevelled button: a press pushes it in and sweeps a glint across it."""
+
+    shader = StringProperty("widgets/glint")
+    shape = BoundedNumericProperty(4, min=0, max=SHAPES - 1)
+
+    uniforms = {**ShaderWidget.uniforms, "shape": "shape"}
+
+    def on_press(self, *args):
+        self.play(0.7)
+
+
+class LiftToggle(ShaderToggle):
+    """A card lifted off its surface when down, its shadow growing; set down when up."""
+
+    shader = StringProperty("widgets/lift")
+    shape = BoundedNumericProperty(4, min=0, max=SHAPES - 1)
+
+    uniforms = {**ShaderToggle.uniforms, "shape": "shape"}

@@ -10,7 +10,7 @@ requires = ["pyshader", "pyshader-stdlib"]
 build-backend = "pyshader_builder"
 
 [tool.uv.sources]
-pyshader = { git = "https://github.com/NucleantUI/PyShader", branch = "main" }
+pyshader = { git = "https://github.com/NucleantUI/PyShader", tag = "0.0.7" }
 pyshader-stdlib = { git = "https://github.com/NucleantUI/pyshader-stdlib", branch = "master" }
 
 [tool.pyshader.effects-bloom]
@@ -1160,3 +1160,68 @@ position-matrices = ["projection_mat", "modelview_mat"]
 uv-varying = "tex_coord0"
 target = "compute"
 arguments = ["shape:float", "pressed:float", "tint:float4"]
+
+[tool.pyshader.widgets-neon]
+source = "src/kivy_pyshader/widgets/neon.py"
+output = "src/kivy_pyshader/widgets/neon.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["shape:float", "morph:float", "pressed:float", "tint:float4"]
+
+[tool.pyshader.widgets-leds]
+source = "src/kivy_pyshader/widgets/leds.py"
+output = "src/kivy_pyshader/widgets/leds.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["count:float", "pressed:float", "tint:float4"]
+
+[tool.pyshader.widgets-power]
+source = "src/kivy_pyshader/widgets/power.py"
+output = "src/kivy_pyshader/widgets/power.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["morph:float", "tint:float4"]
+
+[tool.pyshader.widgets-glint]
+source = "src/kivy_pyshader/widgets/glint.py"
+output = "src/kivy_pyshader/widgets/glint.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["shape:float", "pressed:float", "tint:float4"]
+
+[tool.pyshader.widgets-lift]
+source = "src/kivy_pyshader/widgets/lift.py"
+output = "src/kivy_pyshader/widgets/lift.glsl"
+format = "gles2"
+single-file = true
+uv-top-down = true
+position-attribute = "vPosition"
+texcoord-attribute = "vTexCoords0"
+position-matrices = ["projection_mat", "modelview_mat"]
+uv-varying = "tex_coord0"
+target = "compute"
+arguments = ["shape:float", "morph:float", "tint:float4"]
