@@ -35,7 +35,7 @@ if [ -z "$PYSHADER_WASM" ]; then
 fi
 PYSHADER_WASM=$(cd "$(dirname "$PYSHADER_WASM")" && pwd)/$(basename "$PYSHADER_WASM")
 PYSHADER_WASM=$PYSHADER_WASM SOURCE_DATE_EPOCH=315532800 \
-    uv build --refresh-package pyshader --refresh-package pyshader-stdlib --wheel --out-dir build/pyshader pyshader
+    uv build --directory pyshader --refresh-package pyshader --refresh-package pyshader-stdlib --wheel --out-dir ../build/pyshader
 git clone -q --depth 1 https://github.com/NucleantUI/pyshader-stdlib build/pyshader-stdlib
 cp -R "$CARBONKIVY" build/ck-src
 patch -s -p1 -d build/ck-src < patches/carbonkivy-kivy3.patch

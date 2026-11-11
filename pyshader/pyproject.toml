@@ -15,6 +15,7 @@ build-backend = "pyshader_builder"
 pyshader = { index = "pyshader-releases" }
 pyshader-stdlib = { git = "https://github.com/NucleantUI/pyshader-stdlib", branch = "master" }
 
+# uv reads the path from the directory it runs in; build.sh runs it in pyshader/.
 [[tool.uv.index]]
 name = "pyshader-releases"
 url = "../build/pyshader-releases"
