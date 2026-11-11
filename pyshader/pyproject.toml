@@ -6,12 +6,20 @@ requires-python = ">=3.13"
 dependencies = ["kivy>=2.3"]
 
 [build-system]
-requires = ["pyshader", "pyshader-stdlib"]
+requires = ["pyshader>=0.0.8,<0.1.0", "pyshader-stdlib"]
 build-backend = "pyshader_builder"
 
 [tool.uv.sources]
-pyshader = { git = "https://github.com/NucleantUI/PyShader", tag = "0.0.7" }
+# The newest PyShader release below 0.1.0: build.sh downloads its wheel, which
+# carries the compiler, into build/pyshader-releases.
+pyshader = { index = "pyshader-releases" }
 pyshader-stdlib = { git = "https://github.com/NucleantUI/pyshader-stdlib", branch = "master" }
+
+[[tool.uv.index]]
+name = "pyshader-releases"
+url = "../build/pyshader-releases"
+format = "flat"
+explicit = true
 
 [tool.pyshader.effects-bloom]
 source = "src/kivy_pyshader/effects/bloom.py"

@@ -4,7 +4,7 @@
 #   KIVY_WHEEL  its Pyodide wheel, default $KIVY/dist-wasm/kivy-*.whl
 #   CARBONKIVY  CarbonKivy checkout, default ../CarbonKivy
 #   KIVYMD      KivyMD checkout, default ../KivyMD
-#   PYSHADER_WASM  pyshader.wasm, default: the one in the PyShader release pyshader/pyproject.toml pins
+#   PYSHADER_WASM  pyshader.wasm, default: the one in the newest PyShader release below 0.1.0
 set -e
 cd "$(dirname "$0")"
 KIVY=${KIVY:-../kivy}
@@ -18,16 +18,20 @@ PYSHADER_SOURCE=${PYSHADER_SOURCE:-https://github.com/kivy-school/kivy-browser/b
 WASM_INDEX=https://pypi.kivyschool.com/packages
 PYPI=https://files.pythonhosted.org/packages/py3
 
-rm -rf site build/carbonkivy build/kivymd build/ck-src build/md-src build/pyshader build/pyshader-stdlib
-mkdir -p build
+rm -rf site build/carbonkivy build/kivymd build/ck-src build/md-src build/pyshader build/pyshader-stdlib build/pyshader-releases
+mkdir -p build/pyshader-releases
 
-# kivy_pyshader: pyshader_builder compiles pyshader/src/**/*.py to Kivy .glsl
+# kivy_pyshader: pyshader_builder compiles pyshader/src/**/*.py to Kivy .glsl,
+# with the newest PyShader release below 0.1.0 (its wheel carries the compiler)
+PYSHADER_TAG=$(git ls-remote --tags --refs https://github.com/NucleantUI/PyShader \
+    | sed -n 's|.*refs/tags/\(0\.0\.[0-9][0-9]*\)$|\1|p' | sort -t. -k3,3n | tail -1)
+echo "PyShader $PYSHADER_TAG"
+PYSHADER_WHEEL=build/pyshader-releases/pyshader-$PYSHADER_TAG-py3-none-any.whl
+curl -sSfL -o "$PYSHADER_WHEEL" \
+    "https://github.com/NucleantUI/PyShader/releases/download/$PYSHADER_TAG/pyshader-$PYSHADER_TAG-py3-none-any.whl"
 if [ -z "$PYSHADER_WASM" ]; then
-    PYSHADER_TAG=$(sed -n 's/^pyshader = .*tag = "\([^"]*\)".*/\1/p' pyshader/pyproject.toml)
-    curl -sSfL -o build/pyshader.whl \
-        "https://github.com/NucleantUI/PyShader/releases/download/$PYSHADER_TAG/pyshader-$PYSHADER_TAG-py3-none-any.whl"
     PYSHADER_WASM=build/pyshader.wasm
-    unzip -p build/pyshader.whl pyshader_builder/pyshader.wasm > "$PYSHADER_WASM"
+    unzip -p "$PYSHADER_WHEEL" pyshader_builder/pyshader.wasm > "$PYSHADER_WASM"
 fi
 PYSHADER_WASM=$(cd "$(dirname "$PYSHADER_WASM")" && pwd)/$(basename "$PYSHADER_WASM")
 PYSHADER_WASM=$PYSHADER_WASM SOURCE_DATE_EPOCH=315532800 \
